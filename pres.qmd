@@ -1,0 +1,189 @@
+---
+title: "Estimating State-level Partisanship"
+author: "Reed Merrill"
+bibliography: "mrp.bib"
+format:
+    revealjs:
+        theme: [default, custom.scss]
+---
+
+# The Problem
+
+Many important political processes occur within states, but it is not straightforward to measure public opinion there.
+
+- Public opinion data measured at the level of individual states is few and far between.
+- Large public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.
+    - Priorities: national representativeness, in-person interviews (over web-based surveys)
+    - Result: smaller sample sizes, cluster sampling
+
+# Objective
+
+Estimate partisanship for each state for the last 35 years.
+
+This talk presents my initial findings regarding model specification and model selection for a single year of survey results.
+
+# My Approach
+
+Multilevel Regression and Poststratification (MRP) [@park2004Bayesian]:
+
+1. Create a multilevel model that accurately predicts partisanship.  
+2. Poststratify the multilevel model's predictions for each state.
+
+# Plan for the Talk
+
+1. Data & Methods
+    a. Overall Approach
+    b. Data
+    c. Estimating state-level Party Identification 
+2. Results
+    a. State and national estimates
+    b. Model Specification
+    c. Model Selection
+
+# Data & Methods
+
+## Overall Approach
+
+1. Test various models created on a small subset of a single survey (training set).
+2. Validate the model on the remaining data from the same survey (test set).
+    a. Poststratify the model's predictions for each state and at the national level.
+    b. Compare those predictions to the disaggregated mean party identification from the test set.
+
+## Data: Public Opinion Surveys
+
+| Survey | Typical Sample Size | Sample Design | Years Active |
+| --- | --- | --- | --- |
+| ANES | 1,200--6,000 (1988--2020) | Hybrid Matched Random & Cluster Sampling | 1948--present |
+| CES | 50,000--60,000 | Matched Random Sample | 2008--present |
+: *Table 1: Survey Characteristics in Presidential Election Years*
+
+- Data: 2012 CES.
+    - First year of the CES that has a large sample size (n = 54,535).
+    - Initial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.
+- Training and Test Sets
+    - The same 5% of the CES data is used for each test (n = 2,541).
+    - Validation of each test is done on the remaining 95% of the data (n = 48,284).
+    - Training set size is based on computatoinal limitations.
+
+---
+
+**Note on Validation Data**
+
+- Directly use the 2012 CES data to validate the models.
+- Its sample size and sampling strategy make it the best option for estimating state-level partisanship [see @gelmanChapter and @ornstein2023].
+
+**Postratification Frame**
+
+- Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA [@ipumsUsa]. 
+
+::: {.notes}
+- Will talk more about the poststratification frame later.
+- Integrated Public Use Microdata Series (IPUMS) 
+    - a project of the Minnesota Population Center.
+:::
+
+## Estimating State-level Party Identification 
+
+**Steps**
+
+1. Predictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)
+    - I begin with a Bayesian multilevel multinomial logit model.
+2. Poststratify predictions for at the state and national levels.
+
+## Predictive Modeling
+
+**Model specification**
+
+- Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors
+- Random intercepts for all predictors except "male"
+- Interactions: gender & eth., educ. & age, educ. & eth.
+
+$$
+Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
+\alpha_{\rm s[i]}^{\rm state}
++ \alpha_{\rm a[i]}^{\rm age}
++ \alpha_{\rm r[i]}^{\rm eth}
++ \alpha_{\rm e[i]}^{\rm educ}
++ \beta^{\rm male} \cdot {\rm male}_{\rm i} 
+\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
++ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
++ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
+\text{(+ state-level predictors)}
+]
+$$
+
+<p align="right">[see @gelmanChapter]</p>
+
+::: {.notes}
+- exlain why I chose MRP, and why I'm using Bayesian methods
+    - Regularized model isn't necessary with a Bayesian approach
+    - Bayesian methods are more flexible
+:::
+
+## Poststratification
+
+<br>
+
+**Example Poststratification Frame**
+
+```{r}
+#| tbl-colwidths: [60,40]
+load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/psframe-ex.RData")
+knitr::kable(psframe_ex)
+```
+
+:::{.notes}
+- This is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.
+- Describe the table.
+- Qickly explain the logic behind poststratification.
+- Using models based on the previous multilevel regression equation, we can predict party identification at the individual level. 
+- We then poststratify these predictions to estimate party identification at the state and national levels.
+- Explain n per cell and overall proportions
+:::
+
+---
+
+<br>
+
+<p align="center">
+**National-level Poststratification**
+</p>
+
+$$
+\theta^{MRP} = \frac{\sum N_j \theta_j}{\sum N_j}
+$$
+
+<p align="center">
+**State-level Poststratification**
+</p>
+
+$$
+\theta_s^{MRP} = \frac{\sum_{j \in s} N_j \theta_j}{\sum_{j \in s} N_j}
+$$
+
+where $\theta$ is the predicted party identification, $s$ is the state, $N$ is the number of cells in the poststratification frame, and $j$ is each cell of the poststratification frame.
+
+:::{.notes}
+- We poststratify our individual level predictions to estimate party identification at the national and state levels.
+:::
+
+# Results
+
+:::{.notes}
+- one heatmap of results for each of dem, rep, ind, for each state
+:::
+
+## Validation: Model Specification
+
+
+
+:::{.notes}
+- correlation to truth plots
+    - one (arranged) plot for each specification
+        - disaggregated means, baseline, state-level predictors
+    - x-axis: predicted party identification
+    - y-axis: actual party identification
+    - color: party
+:::
+
+# References
