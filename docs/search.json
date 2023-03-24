@@ -26,12 +26,5 @@
     "title": "Estimating State-level Partisanship",
     "section": "Poststratification",
     "text": "Poststratification\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nWhite\n0\n18-29\nHS\n56392\n\n\nAlabama\nWhite\n0\n18-29\nSome College\n108794\n\n\n…\n…\n…\n…\n…\n…\n\n\nAlabama\nHispanic\n1\n30-39\nHS\n954\n\n\nAlabama\nHispanic\n1\n70+\nPost-grad\n69\n\n\nAlabama\nBlack\n1\n50-59\nHS\n29100\n\n\n\n\n\n\n\nThis is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
-  },
-  {
-    "objectID": "index.html#validation-model-specification",
-    "href": "index.html#validation-model-specification",
-    "title": "Estimating State-level Partisanship",
-    "section": "Validation: Model Specification",
-    "text": "Validation: Model Specification\n\n\ncorrelation to truth plots\n\none (arranged) plot for each specification\n\ndisaggregated means, baseline, state-level predictors\n\nx-axis: predicted party identification\ny-axis: actual party identification\ncolor: party"
   }
 ]

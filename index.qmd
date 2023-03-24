@@ -20,7 +20,7 @@ Many important political processes occur within states, but it is not straightfo
 
 Estimate partisanship for each state for the last 35 years.
 
-This talk presents my initial findings regarding model specification and model selection for a single year of survey results.
+This talk presents my initial findings regarding model specification for a single year of survey results.
 
 # My Approach
 
@@ -38,7 +38,6 @@ Multilevel Regression and Poststratification (MRP) [@park2004Bayesian]:
 2. Results
     a. State and national estimates
     b. Model Specification
-    c. Model Selection
 
 # Data & Methods
 
@@ -129,6 +128,7 @@ $$
 ```{r}
 #| tbl-colwidths: [60,40]
 load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/data.RData")
+source("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/modeling-functions.r")
 knitr::kable(psframe_ex)
 ```
 
@@ -245,17 +245,5 @@ ggplot(states_map, aes(x = x, y = y, group = group)) +
                        name = "Ind", low = "white", high = "#8a5603") + 
   theme(legend.margin=margin(l = 0.5, unit='cm'))
 ```
-
-## Validation: Model Specification
-
-
-:::{.notes}
-- correlation to truth plots
-    - one (arranged) plot for each specification
-        - disaggregated means, baseline, state-level predictors
-    - x-axis: predicted party identification
-    - y-axis: actual party identification
-    - color: party
-:::
 
 # References
