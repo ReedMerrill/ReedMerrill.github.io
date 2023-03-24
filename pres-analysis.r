@@ -41,9 +41,6 @@ ps_sample <- ps_sample |>
     )
 psframe_ex <- bind_rows(pshead, ps_elipses, ps_sample)
 psframe_ex <- psframe_ex |> select(-year)
-save(psframe_ex,
-    file = "presentations/saguaro-symposium/psframe-ex.RData"
-)
 
 ################################################################################
 # Prep for Poststratify
@@ -171,6 +168,11 @@ stpreds_state_output <- estimate_state_pid(
 )
 
 ################################################################################
+# Results
+
+
+
+################################################################################
 # Validate
 
 ##########
@@ -243,4 +245,13 @@ disag_mean_performance_year$model <- "Disagg."
 disag_mean_performance_year$model <- disag_mean_performance_year$model |> factor()
 
 ################################################################################
-# Main Results
+# Save needed output
+
+save(
+    psframe_ex,
+    disag_state_post,
+    baseline_state_output,
+    stpreds_state_output,
+
+    file = "presentations/saguaro-symposium/data.RData"
+)

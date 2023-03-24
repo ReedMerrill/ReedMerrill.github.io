@@ -42,7 +42,7 @@ Multilevel Regression and Poststratification (MRP) [@park2004Bayesian]:
 
 # Data & Methods
 
-## Overall Approach
+**Overall Approach**
 
 1. Test various models created on a small subset of a single survey (training set).
 2. Validate the model on the remaining data from the same survey (test set).
@@ -128,7 +128,7 @@ $$
 
 ```{r}
 #| tbl-colwidths: [60,40]
-load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/psframe-ex.RData")
+load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/data.RData")
 knitr::kable(psframe_ex)
 ```
 
@@ -169,12 +169,78 @@ where $\theta$ is the predicted party identification, $s$ is the state, $N$ is t
 
 # Results
 
-:::{.notes}
-- one heatmap of results for each of dem, rep, ind, for each state
-:::
+**Predicted Proportion Identifying as Democratic**
+
+```{r}
+library(usmap)
+library(tidyverse)
+# Load map and merge data
+states_map <- us_map(regions = "states")
+states_df_melted_dem <- stpreds_state_output %>% filter(id == "dem") |> select(state, mean_pid)
+states_map <- left_join(states_map, states_df_melted_dem, by = c("full" = "state")) %>% drop_na()
+# Plot
+ggplot(states_map, aes(x = x, y = y, group = group)) +
+  geom_polygon(
+    aes(fill = mean_pid),
+    colour = "black",
+    linetype = "solid"
+  ) +
+  theme_void() +
+  scale_fill_gradient(
+    limits = c(0.25, .65), breaks = c(.25, .65),
+                       name = "Dem", low = "white", high = "#051d45") + 
+  theme(legend.margin=margin(l = 0.5, unit='cm'))
+```
+
+---
+
+**Predicted Proportion Identifying as Republican**
+
+```{r}
+# Load map and merge data
+states_map <- us_map(regions = "states")
+states_df_melted_rep <- stpreds_state_output %>% filter(id == "rep") |> select(state, mean_pid)
+states_map <- left_join(states_map, states_df_melted_rep, by = c("full" = "state")) %>% drop_na()
+# Plot
+ggplot(states_map, aes(x = x, y = y, group = group)) +
+  geom_polygon(
+    aes(fill = mean_pid),
+    colour = "black",
+    linetype = "solid"
+  ) +
+  theme_void() +
+  scale_fill_gradient(
+    limits = c(0.2, .62), 
+    breaks = c(.2, .62),
+                       name = "Rep", low = "white", high = "#450505") + 
+  theme(legend.margin=margin(l = 0.5, unit='cm'))
+```
+
+---
+
+**Predicted Proportion Identifying as Independent**
+
+```{r}
+# Load map and merge data
+states_map <- us_map(regions = "states")
+states_df_melted_ind <- stpreds_state_output %>% filter(id == "ind") |> select(state, mean_pid)
+states_map <- left_join(states_map, states_df_melted_ind, by = c("full" = "state")) %>% drop_na()
+# Plot
+ggplot(states_map, aes(x = x, y = y, group = group)) +
+  geom_polygon(
+    aes(fill = mean_pid),
+    colour = "black",
+    linetype = "solid"
+  ) +
+  theme_void() +
+  scale_fill_gradient(
+    limits = c(0.09, .23), 
+    breaks = c(0.09, .23), 
+                       name = "Ind", low = "white", high = "#8a1903") + 
+  theme(legend.margin=margin(l = 0.5, unit='cm'))
+```
 
 ## Validation: Model Specification
-
 
 
 :::{.notes}

@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "index.html#overall-approach",
-    "href": "index.html#overall-approach",
-    "title": "Estimating State-level Partisanship",
-    "section": "Overall Approach",
-    "text": "Overall Approach\n\nTest various models created on a small subset of a single survey (training set).\nValidate the model on the remaining data from the same survey (test set).\n\nPoststratify the model’s predictions for each state and at the national level.\nCompare those predictions to the disaggregated mean party identification from the test set."
-  },
-  {
     "objectID": "index.html#data-public-opinion-surveys",
     "href": "index.html#data-public-opinion-surveys",
     "title": "Estimating State-level Partisanship",
@@ -32,7 +25,7 @@
     "href": "index.html#poststratification",
     "title": "Estimating State-level Partisanship",
     "section": "Poststratification",
-    "text": "Poststratification\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nWhite\n0\n18-29\nHS\n56392\n\n\nAlabama\nWhite\n0\n18-29\nSome College\n108794\n\n\n…\n…\n…\n…\n…\n…\n\n\nAlabama\nHispanic\n1\n60-69\nPost-grad\n391\n\n\nAlabama\nOther\n0\n60-69\n4-Year College\n382\n\n\nAlabama\nWhite\n1\n70+\nSome College\n33028\n\n\n\n\n\n\n\nThis is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
+    "text": "Poststratification\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nWhite\n0\n18-29\nHS\n56392\n\n\nAlabama\nWhite\n0\n18-29\nSome College\n108794\n\n\n…\n…\n…\n…\n…\n…\n\n\nAlabama\nHispanic\n1\n30-39\nHS\n954\n\n\nAlabama\nHispanic\n1\n70+\nPost-grad\n69\n\n\nAlabama\nBlack\n1\n50-59\nHS\n29100\n\n\n\n\n\n\n\nThis is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
   },
   {
     "objectID": "index.html#validation-model-specification",

@@ -397,10 +397,7 @@
 <section>
 <section id="data-methods" class="title-slide slide level1 center">
 <h1>Data &amp; Methods</h1>
-
-</section>
-<section id="overall-approach" class="slide level2">
-<h2>Overall Approach</h2>
+<p><strong>Overall Approach</strong></p>
 <ol type="1">
 <li>Test various models created on a small subset of a single survey (training set).</li>
 <li>Validate the model on the remaining data from the same survey (test set).
@@ -605,25 +602,25 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
 <td style="text-align: left;">Alabama</td>
 <td style="text-align: left;">Hispanic</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: left;">60-69</td>
-<td style="text-align: left;">Post-grad</td>
-<td style="text-align: left;">391</td>
+<td style="text-align: left;">30-39</td>
+<td style="text-align: left;">HS</td>
+<td style="text-align: left;">954</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">Other</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">60-69</td>
-<td style="text-align: left;">4-Year College</td>
-<td style="text-align: left;">382</td>
+<td style="text-align: left;">Hispanic</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">70+</td>
+<td style="text-align: left;">Post-grad</td>
+<td style="text-align: left;">69</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">White</td>
+<td style="text-align: left;">Black</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: left;">70+</td>
-<td style="text-align: left;">Some College</td>
-<td style="text-align: left;">33028</td>
+<td style="text-align: left;">50-59</td>
+<td style="text-align: left;">HS</td>
+<td style="text-align: left;">29100</td>
 </tr>
 </tbody>
 </table>
@@ -685,22 +682,19 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
 <section>
 <section id="results" class="title-slide slide level1 center">
 <h1>Results</h1>
-<aside class="notes">
-<ul>
-<li>one heatmap of results for each of dem, rep, ind, for each state</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
+<p><strong>Predicted Proportion Identifying as Democratic</strong></p>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
+<section class="slide level2">
+
+<p><strong>Predicted Proportion Identifying as Republican</strong></p>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<section class="slide level2">
+
+<p><strong>Predicted Proportion Identifying as Independent</strong></p>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
 <section id="validation-model-specification" class="slide level2">
 <h2>Validation: Model Specification</h2>
 <aside class="notes">
