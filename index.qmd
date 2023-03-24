@@ -169,10 +169,8 @@ where $\theta$ is the predicted party identification, $s$ is the state, $N$ is t
 
 # Results
 
-**
-
-```{r}
-#| label: fig-airquality
+```{r rep results}
+#| label: fig-dem
 #| fig-cap: "Predicted Proportion Identifying as Democratic."
 #| warning: false
 
@@ -198,9 +196,11 @@ ggplot(states_map, aes(x = x, y = y, group = group)) +
 
 ---
 
-**Predicted Proportion Identifying as Republican**
-
-```{r}
+```{r rep results}
+#| label: fig-rep
+#| fig-cap: "Predicted Proportion Identifying as Republican."
+#| warning: false
+ 
 # Load map and merge data
 states_map <- us_map(regions = "states")
 states_df_melted_rep <- stpreds_state_output %>% filter(id == "rep") |> select(state, mean_pid)
@@ -222,9 +222,11 @@ ggplot(states_map, aes(x = x, y = y, group = group)) +
 
 ---
 
-**Predicted Proportion Identifying as Independent**
-
 ```{r}
+#| label: fig-ind
+#| fig-cap: "Predicted Proportion Identifying as Independent."
+#| warning: false
+ 
 # Load map and merge data
 states_map <- us_map(regions = "states")
 states_df_melted_ind <- stpreds_state_output %>% filter(id == "ind") |> select(state, mean_pid)
@@ -240,7 +242,7 @@ ggplot(states_map, aes(x = x, y = y, group = group)) +
   scale_fill_gradient(
     limits = c(0.09, .23), 
     breaks = c(0.09, .23), 
-                       name = "Ind", low = "white", high = "#8a1903") + 
+                       name = "Ind", low = "white", high = "#8a5603") + 
   theme(legend.margin=margin(l = 0.5, unit='cm'))
 ```
 
