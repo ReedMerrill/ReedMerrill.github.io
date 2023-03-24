@@ -167,7 +167,7 @@ where $\theta$ is the predicted party identification, $s$ is the state, $N$ is t
 - We poststratify our individual level predictions to estimate party identification at the national and state levels.
 :::
 
-# Results
+---
 
 ```{r rep results}
 #| label: fig-dem
