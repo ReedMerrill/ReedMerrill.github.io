@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "pres.html#overall-approach",
+    "href": "pres.html#overall-approach",
+    "title": "Estimating State-level Partisanship",
+    "section": "Overall Approach",
+    "text": "Overall Approach\n\nTest various models created on a small subset of a single survey (training set).\nValidate the model on the remaining data from the same survey (test set).\n\nPoststratify the model’s predictions for each state and at the national level.\nCompare those predictions to the disaggregated mean party identification from the test set."
+  },
+  {
+    "objectID": "pres.html#data-public-opinion-surveys",
+    "href": "pres.html#data-public-opinion-surveys",
+    "title": "Estimating State-level Partisanship",
+    "section": "Data: Public Opinion Surveys",
+    "text": "Data: Public Opinion Surveys\n\nTable 1: Survey Characteristics in Presidential Election Years\n\n\n\n\n\n\n\n\nSurvey\nTypical Sample Size\nSample Design\nYears Active\n\n\n\n\nANES\n1,200–6,000 (1988–2020)\nHybrid Matched Random & Cluster Sampling\n1948–present\n\n\nCES\n50,000–60,000\nMatched Random Sample\n2008–present\n\n\n\n\nData: 2012 CES.\n\nFirst year of the CES that has a large sample size (n = 54,535).\nInitial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.\n\nTraining and Test Sets\n\nThe same 5% of the CES data is used for each test (n = 2,541).\nValidation of each test is done on the remaining 95% of the data (n = 48,284).\nTraining set size is based on computatoinal limitations."
+  },
+  {
+    "objectID": "pres.html#estimating-state-level-party-identification",
+    "href": "pres.html#estimating-state-level-party-identification",
+    "title": "Estimating State-level Partisanship",
+    "section": "Estimating State-level Party Identification",
+    "text": "Estimating State-level Party Identification\nSteps\n\nPredictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)\n\nI begin with a Bayesian multilevel multinomial logit model.\n\nPoststratify predictions for at the state and national levels."
+  },
+  {
+    "objectID": "pres.html#predictive-modeling",
+    "href": "pres.html#predictive-modeling",
+    "title": "Estimating State-level Partisanship",
+    "section": "Predictive Modeling",
+    "text": "Predictive Modeling\nModel specification\n\nPredictors: State, Age, Ethnicity, Gender, Education, and state-level predictors\nRandom intercepts for all predictors except “male”\nInteractions: gender & eth., educ. & age, educ. & eth.\n\n\\[\nPr(y_i = \\text{dem, rep, ind}) = logit^{-1}[\n\\alpha_{\\rm s[i]}^{\\rm state}\n+ \\alpha_{\\rm a[i]}^{\\rm age}\n+ \\alpha_{\\rm r[i]}^{\\rm eth}\n+ \\alpha_{\\rm e[i]}^{\\rm educ}\n+ \\beta^{\\rm male} \\cdot {\\rm male}_{\\rm i}\n\\\\ + \\alpha_{\\rm m[i], r[i]}^{\\rm male.eth}\n+ \\alpha_{\\rm e[i], a[i]}^{\\rm educ.age}\n+ \\alpha_{\\rm e[i], r[i]}^{\\rm educ.eth}\n\\text{(+ state-level predictors)}\n]\n\\]\n\n(see Gelman n.d.)\n\n\n\nexlain why I chose MRP, and why I’m using Bayesian methods\n\nRegularized model isn’t necessary with a Bayesian approach\nBayesian methods are more flexible"
+  },
+  {
+    "objectID": "pres.html#poststratification",
+    "href": "pres.html#poststratification",
+    "title": "Estimating State-level Partisanship",
+    "section": "Poststratification",
+    "text": "Poststratification\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nWhite\n0\n18-29\nHS\n56392\n\n\nAlabama\nWhite\n0\n18-29\nSome College\n108794\n\n\n…\n…\n…\n…\n…\n…\n\n\nAlabama\nHispanic\n1\n60-69\nPost-grad\n391\n\n\nAlabama\nOther\n0\n60-69\n4-Year College\n382\n\n\nAlabama\nWhite\n1\n70+\nSome College\n33028\n\n\n\n\n\n\n\nThis is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
+  },
+  {
+    "objectID": "pres.html#validation-model-specification",
+    "href": "pres.html#validation-model-specification",
+    "title": "Estimating State-level Partisanship",
+    "section": "Validation: Model Specification",
+    "text": "Validation: Model Specification\n\n\ncorrelation to truth plots\n\none (arranged) plot for each specification\n\ndisaggregated means, baseline, state-level predictors\n\nx-axis: predicted party identification\ny-axis: actual party identification\ncolor: party"
+  }
+]
