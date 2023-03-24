@@ -169,9 +169,13 @@ where $\theta$ is the predicted party identification, $s$ is the state, $N$ is t
 
 # Results
 
-**Predicted Proportion Identifying as Democratic**
+**
 
 ```{r}
+#| label: fig-airquality
+#| fig-cap: "Predicted Proportion Identifying as Democratic."
+#| warning: false
+
 library(usmap)
 library(tidyverse)
 # Load map and merge data
