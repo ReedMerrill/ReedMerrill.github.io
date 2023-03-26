@@ -22,13 +22,6 @@ Estimate partisanship for each state for the last 35 years.
 
 This talk presents my initial findings regarding model specification for a single year of survey results.
 
-# My Approach
-
-Multilevel Regression and Poststratification (MRP) [@park2004Bayesian]:
-
-1. Create a multilevel model that accurately predicts partisanship.  
-2. Poststratify the multilevel model's predictions for each state.
-
 # Plan for the Talk
 
 1. Data & Methods
@@ -43,10 +36,11 @@ Multilevel Regression and Poststratification (MRP) [@park2004Bayesian]:
 
 **Overall Approach**
 
-1. Test various models created on a small subset of a single survey (training set).
-2. Validate the model on the remaining data from the same survey (test set).
-    a. Poststratify the model's predictions for each state and at the national level.
-    b. Compare those predictions to the disaggregated mean party identification from the test set.
+Test various predictive models for estimating state-level partisanship.
+
+1. Simulate a smaller ANES sample by estimate partisanship at the individual level using a small subset of the CES 2012 data.
+2. Poststratify those estimates to the state level.
+3. Validate the model's predictions against the full CES 2012 data.
 
 ## Data: Public Opinion Surveys
 
@@ -62,7 +56,7 @@ Multilevel Regression and Poststratification (MRP) [@park2004Bayesian]:
 - Training and Test Sets
     - The same 5% of the CES data is used for each test (n = 2,541).
     - Validation of each test is done on the remaining 95% of the data (n = 48,284).
-    - Training set size is based on computatoinal limitations.
+    - Training set size is based on computational limitations.
 
 ---
 
@@ -127,7 +121,7 @@ $$
 
 ```{r}
 #| tbl-colwidths: [60,40]
-load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/data.RData")
+load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/psframe-ex.RData")
 source("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/modeling-functions.r")
 knitr::kable(psframe_ex)
 ```
