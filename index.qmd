@@ -7,72 +7,122 @@ format:
         theme: [default, custom.scss]
 ---
 
-# The Problem
+## Introduction
 
-Many important political processes occur within states, but it is not straightforward to measure public opinion there.
+::: {.columns}
+:::: {.column}
+Reed Merrill
+
+PhD Student, Political Science
+
+Fields: American Politics and Methodology
+
+<br>
+
+University of Arizona
+
+School of Government and Public Policy
+::::
+:::: {.column}
+![](images/sgpp-logo.png)
+::::
+:::
+
+## Motivation and Problem
+
+Many important political processes occur within states, but it is not straightforward to measure public opinion at this level.
 
 - Public opinion data measured at the level of individual states is few and far between.
 - Large public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.
     - Priorities: national representativeness, in-person interviews (over web-based surveys)
-    - Result: smaller sample sizes, cluster sampling
+    - Consequences: 
+        - Smaller sample sizes
+        - Area-clustered sampling, which saves money at the expense of subnational representation
 
-# Objective
+## Project Objectives
 
-Estimate partisanship for each state for the last 35 years.
+Estimate partisanship (percentage of population per party) in each state for the last 35 years.
 
-This talk presents my initial findings regarding model specification for a single year of survey results.
+- Need to specify a model that performs well on the American National Election Studies (ANES) survey data.
+    - current model underperforms at predicting Independent partisanship
+        - mine the survey data for features that are predictive of this subset of partisans
 
-# Plan for the Talk
+<!--
+::: {.fragment}
+ANES Data:
 
-1. Data & Methods
-    a. Overall Approach
-    b. Data
-    c. Estimating state-level Party Identification 
-2. Results
-    a. State and national estimates
-    b. Model Specification
+- available for every year of interest
+- consistent measures across years (measurement validity)
+- sacrifices representativeness
+:::
+-->
 
-# Data & Methods
+::: {.notes}
+- Summarize this slide
+    - The last 35 or so years could represent a "contemporary era" for politics
+- Have made some progress. I will present my initial results and then show how feature selection, a data mining technique, has improved my model.
+- Need to mine features: It is difficult to predict independent partisanship, and existing academic theories are limited in this regard.
+:::
 
-**Overall Approach**
+## Multilevel Regression and Poststratification
 
-Test various predictive models for estimating state-level partisanship.
+A technique used to improve the representativeness of survey data.
 
-1. Simulate a smaller ANES sample by estimate partisanship at the individual level using a small subset of the CES 2012 data.
-2. Poststratify those estimates to the state level.
-3. Validate the model's predictions against the full CES 2012 data.
+Steps:
 
-## Data: Public Opinion Surveys
+1. Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for. 
+    1. Use predictors that are available in census data so that accurate estimates of the population can be used later during weighting.
+2. Make predictions: Use the model from **Step 1** to make predictions on measurable characteristics from the populations of interest.
+3. Poststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest.
 
-| Survey | Typical Sample Size | Sample Design | Years Active |
-| --- | --- | --- | --- |
-| ANES | 1,200--6,000 (1988--2020) | Hybrid Matched Random & Cluster Sampling | 1948--present |
-| CES | 50,000--60,000 | Matched Random Sample | 2008--present |
-: *Table 1: Survey Characteristics in Presidential Election Years*
+## State-level Estimation
 
-- Data: 2012 CES.
-    - First year of the CES that has a large sample size (n = 54,535).
-    - Initial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.
-- Training and Test Sets
-    - The same 5% of the CES data is used for each test (n = 2,541).
-    - Validation of each test is done on the remaining 95% of the data (n = 48,284).
-    - Training set size is based on computational limitations.
+- The above model consisting of demographic predictors can be modified to include sub-national units, like states, and other state-level predictors.
 
----
+>- The model-specification tests that I have done so far involve state-level predictors.
 
-**Note on Validation Data**
+::: {.notes}
+- state level predictors improve predictive accuracy and facilitate sub-national estimation
+:::
 
-- Directly use the 2012 CES data to validate the models.
-- Its sample size and sampling strategy make it the best option for estimating state-level partisanship [see @gelmanChapter and @ornstein2023].
+## Validation
 
-**Postratification Frame**
+Model Training and Validation: Congressional Election Studies
+
+n = 54,535
+
+I can simulate my use-case using this larger dataset. 
+
+- Training set: 10% of the full sample
+- Test set: The remaining 90%
+- Later work: simulations of geographic biases due to missing levels of the geographic data at the state and county levels
+
+::: {.notes}
+- Missing levels for county and state are present in the ANES data I will ultimately derive my estimates from.
+:::
+
+## Poststratification
 
 - Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA [@ipumsUsa]. 
 
-::: {.notes}
-- Will talk more about the poststratification frame later.
-- Integrated Public Use Microdata Series (IPUMS) 
-    - a project of the Minnesota Population Center.
+<br>
+
+**Example Poststratification Frame**
+
+```{r}
+#| tbl-colwidths: [60,40]
+load("/home/reed/Dropbox/01-samara-ra/presentations/mrp-presentation/psframe-ex.RData")
+source("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/modeling-functions.r")
+knitr::kable(psframe_ex)
+```
+
+:::{.notes}
+- This is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.
+- Describe the table.
+- Qickly explain the logic behind poststratification.
+- Using models based on the previous multilevel regression equation, we can predict party identification at the individual level. 
+- We then poststratify these predictions to estimate party identification at the state and national levels.
+- Explain n per cell and overall proportions
 :::
 
 ## Estimating State-level Party Identification 
@@ -111,28 +161,6 @@ $$
 - exlain why I chose MRP, and why I'm using Bayesian methods
     - Regularized model isn't necessary with a Bayesian approach
     - Bayesian methods are more flexible
-:::
-
-## Poststratification
-
-<br>
-
-**Example Poststratification Frame**
-
-```{r}
-#| tbl-colwidths: [60,40]
-load("/home/reed/Dropbox/01-samara-ra/presentations/saguaro-symposium/psframe-ex.RData")
-source("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/modeling-functions.r")
-knitr::kable(psframe_ex)
-```
-
-:::{.notes}
-- This is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.
-- Describe the table.
-- Qickly explain the logic behind poststratification.
-- Using models based on the previous multilevel regression equation, we can predict party identification at the individual level. 
-- We then poststratify these predictions to estimate party identification at the state and national levels.
-- Explain n per cell and overall proportions
 :::
 
 ---

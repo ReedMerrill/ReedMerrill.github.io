@@ -4,7 +4,7 @@
     "href": "index.html#data-public-opinion-surveys",
     "title": "Estimating State-level Partisanship",
     "section": "Data: Public Opinion Surveys",
-    "text": "Data: Public Opinion Surveys\n\nTable 1: Survey Characteristics in Presidential Election Years\n\n\n\n\n\n\n\n\nSurvey\nTypical Sample Size\nSample Design\nYears Active\n\n\n\n\nANES\n1,200–6,000 (1988–2020)\nHybrid Matched Random & Cluster Sampling\n1948–present\n\n\nCES\n50,000–60,000\nMatched Random Sample\n2008–present\n\n\n\n\nData: 2012 CES.\n\nFirst year of the CES that has a large sample size (n = 54,535).\nInitial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.\n\nTraining and Test Sets\n\nThe same 5% of the CES data is used for each test (n = 2,541).\nValidation of each test is done on the remaining 95% of the data (n = 48,284).\nTraining set size is based on computatoinal limitations."
+    "text": "Data: Public Opinion Surveys\n\nTable 1: Survey Characteristics in Presidential Election Years\n\n\n\n\n\n\n\n\nSurvey\nTypical Sample Size\nSample Design\nYears Active\n\n\n\n\nANES\n1,200–6,000 (1988–2020)\nHybrid Matched Random & Cluster Sampling\n1948–present\n\n\nCES\n50,000–60,000\nMatched Random Sample\n2008–present\n\n\n\n\nData: 2012 CES.\n\nFirst year of the CES that has a large sample size (n = 54,535).\nInitial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.\n\nTraining and Test Sets\n\nThe same 5% of the CES data is used for each test (n = 2,541).\nValidation of each test is done on the remaining 95% of the data (n = 48,284).\nTraining set size is based on computational limitations."
   },
   {
     "objectID": "index.html#estimating-state-level-party-identification",
@@ -25,6 +25,48 @@
     "href": "index.html#poststratification",
     "title": "Estimating State-level Partisanship",
     "section": "Poststratification",
-    "text": "Poststratification\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nWhite\n0\n18-29\nHS\n56392\n\n\nAlabama\nWhite\n0\n18-29\nSome College\n108794\n\n\n…\n…\n…\n…\n…\n…\n\n\nAlabama\nHispanic\n1\n30-39\nHS\n954\n\n\nAlabama\nHispanic\n1\n70+\nPost-grad\n69\n\n\nAlabama\nBlack\n1\n50-59\nHS\n29100\n\n\n\n\n\n\n\nThis is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
+    "text": "Poststratification\n\nConstructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA (“Steven Ruggles, Sarah Flood, Matthew Sobek, Danika Brockman, Grace Cooper, Stephanie Richards, and Megan Schouweiler. IPUMS USA: Version 13.0 [Dataset]. Minneapolis, MN: IPUMS, 2023. https://doi.org/10.18128/D010.V13.0,” n.d.).\n\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nWhite\n0\n18-29\nHS\n56392\n\n\nAlabama\nWhite\n0\n18-29\nSome College\n108794\n\n\n…\n…\n…\n…\n…\n…\n\n\nAlabama\nHispanic\n1\n30-39\nHS\n954\n\n\nAlabama\nHispanic\n1\n70+\nPost-grad\n69\n\n\nAlabama\nBlack\n1\n50-59\nHS\n29100\n\n\n\n\n\n\n\nThis is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
+  },
+  {
+    "objectID": "index.html#motivation-and-problem",
+    "href": "index.html#motivation-and-problem",
+    "title": "Estimating State-level Partisanship",
+    "section": "Motivation and Problem",
+    "text": "Motivation and Problem\nMany important political processes occur within states, but it is not straightforward to measure public opinion at this level.\n\nPublic opinion data measured at the level of individual states is few and far between.\nLarge public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.\n\nPriorities: national representativeness, in-person interviews (over web-based surveys)\nConsequences:\n\nSmaller sample sizes\nArea-clustered sampling, which saves money at the expense of subnational representation"
+  },
+  {
+    "objectID": "index.html#project-objectives",
+    "href": "index.html#project-objectives",
+    "title": "Estimating State-level Partisanship",
+    "section": "Project Objectives",
+    "text": "Project Objectives\nEstimate partisanship (percentage of population per party) in each state for the last 35 years.\n\nNeed to specify a model that performs well on the American National Election Studies (ANES) survey data.\n\ncurrent model underperforms at predicting Independent partisanship\n\nmine the survey data for features that are predictive of this subset of partisans\n\n\n\n\n\n\nSummarize this slide\n\nThe last 35 or so years could represent a “contemporary era” for politics\n\nHave made some progress. I will present my initial results and then show how feature selection, a data mining technique, has improved my model.\nNeed to mine features: It is difficult to predict independent partisanship, and existing academic theories are limited in this regard."
+  },
+  {
+    "objectID": "index.html#multilevel-regression-and-poststratification",
+    "href": "index.html#multilevel-regression-and-poststratification",
+    "title": "Estimating State-level Partisanship",
+    "section": "Multilevel Regression and Poststratification",
+    "text": "Multilevel Regression and Poststratification\nA technique used to improve the representativeness of survey data.\nSteps:\n\nMultilevel Regression: Train a model that predicts the survey outcome you want improved estimates for.\n\nUse predictors that are available in census data so that accurate estimates of the population can be used later during weighting.\n\nMake predictions: Use the model from Step 1 to make predictions on measurable characteristics from the populations of interest.\nPoststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest."
+  },
+  {
+    "objectID": "index.html#state-level-estimation",
+    "href": "index.html#state-level-estimation",
+    "title": "Estimating State-level Partisanship",
+    "section": "State-level Estimation",
+    "text": "State-level Estimation\n\nThe above model consisting of demographic predictors can be modified to include sub-national units, like states, and other state-level predictors.\n\n\nThe model-specification tests that I have done so far involve state-level predictors.\n\n\n\nstate level predictors improve predictive accuracy and facilitate sub-national estimation"
+  },
+  {
+    "objectID": "index.html#validation",
+    "href": "index.html#validation",
+    "title": "Estimating State-level Partisanship",
+    "section": "Validation",
+    "text": "Validation\nModel Training and Validation: Congressional Election Studies\nn = 54,535\nI can simulate my use-case using this larger dataset.\n\nTraining set: 10% of the full sample\nTest set: The remaining 90%\nLater work: simulations of geographic biases due to missing levels of the geographic data at the state and county levels\n\n\n\nMissing levels for county and state are present in the ANES data I will ultimately derive my estimates from."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "Estimating State-level Partisanship",
+    "section": "Introduction",
+    "text": "Introduction\n\n\nReed Merrill\nPhD Student, Political Science\nFields: American Politics and Methodology\n\nUniversity of Arizona\nSchool of Government and Public Policy"
   }
 ]

@@ -347,130 +347,66 @@
   <p class="author">Reed Merrill</p>
 </section>
 
-<section id="the-problem" class="title-slide slide level1 center">
-<h1>The Problem</h1>
-<p>Many important political processes occur within states, but it is not straightforward to measure public opinion there.</p>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<div class="columns">
+<div class="column">
+<p>Reed Merrill</p>
+<p>PhD Student, Political Science</p>
+<p>Fields: American Politics and Methodology</p>
+<p><br></p>
+<p>University of Arizona</p>
+<p>School of Government and Public Policy</p>
+</div><div class="column">
+<p><img data-src="images/sgpp-logo.png"></p>
+</div>
+</div>
+</section>
+<section id="motivation-and-problem" class="slide level2">
+<h2>Motivation and Problem</h2>
+<p>Many important political processes occur within states, but it is not straightforward to measure public opinion at this level.</p>
 <ul>
 <li>Public opinion data measured at the level of individual states is few and far between.</li>
 <li>Large public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.
 <ul>
 <li>Priorities: national representativeness, in-person interviews (over web-based surveys)</li>
-<li>Result: smaller sample sizes, cluster sampling</li>
+<li>Consequences:
+<ul>
+<li>Smaller sample sizes</li>
+<li>Area-clustered sampling, which saves money at the expense of subnational representation</li>
+</ul></li>
 </ul></li>
 </ul>
 </section>
-
-<section id="objective" class="title-slide slide level1 center">
-<h1>Objective</h1>
-<p>Estimate partisanship for each state for the last 35 years.</p>
-<p>This talk presents my initial findings regarding model specification for a single year of survey results.</p>
-</section>
-
-<section id="my-approach" class="title-slide slide level1 center">
-<h1>My Approach</h1>
-<p>Multilevel Regression and Poststratification (MRP) <span class="citation" data-cites="park2004Bayesian">(<a href="#/references" role="doc-biblioref" onclick="">Park, Gelman, and Bafumi 2004</a>)</span>:</p>
-<ol type="1">
-<li>Create a multilevel model that accurately predicts partisanship.<br>
-</li>
-<li>Poststratify the multilevel model’s predictions for each state.</li>
-</ol>
-</section>
-
-<section id="plan-for-the-talk" class="title-slide slide level1 center">
-<h1>Plan for the Talk</h1>
-<ol type="1">
-<li>Data &amp; Methods
-<ol type="a">
-<li>Overall Approach</li>
-<li>Data</li>
-<li>Estimating state-level Party Identification</li>
-</ol></li>
-<li>Results
-<ol type="a">
-<li>State and national estimates</li>
-<li>Model Specification</li>
-</ol></li>
-</ol>
-</section>
-
-<section>
-<section id="data-methods" class="title-slide slide level1 center">
-<h1>Data &amp; Methods</h1>
-<p><strong>Overall Approach</strong></p>
-<ol type="1">
-<li>Test various models created on a small subset of a single survey (training set).</li>
-<li>Validate the model on the remaining data from the same survey (test set).
-<ol type="a">
-<li>Poststratify the model’s predictions for each state and at the national level.</li>
-<li>Compare those predictions to the disaggregated mean party identification from the test set.</li>
-</ol></li>
-</ol>
-</section>
-<section id="data-public-opinion-surveys" class="slide level2">
-<h2>Data: Public Opinion Surveys</h2>
-<table>
-<caption><em>Table 1: Survey Characteristics in Presidential Election Years</em></caption>
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Survey</th>
-<th>Typical Sample Size</th>
-<th>Sample Design</th>
-<th>Years Active</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>ANES</td>
-<td>1,200–6,000 (1988–2020)</td>
-<td>Hybrid Matched Random &amp; Cluster Sampling</td>
-<td>1948–present</td>
-</tr>
-<tr class="even">
-<td>CES</td>
-<td>50,000–60,000</td>
-<td>Matched Random Sample</td>
-<td>2008–present</td>
-</tr>
-</tbody>
-</table>
+<section id="project-objectives" class="slide level2">
+<h2>Project Objectives</h2>
+<p>Estimate partisanship (percentage of population per party) in each state for the last 35 years.</p>
 <ul>
-<li>Data: 2012 CES.
+<li>Need to specify a model that performs well on the American National Election Studies (ANES) survey data.
 <ul>
-<li>First year of the CES that has a large sample size (n = 54,535).</li>
-<li>Initial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.</li>
+<li>current model underperforms at predicting Independent partisanship
+<ul>
+<li>mine the survey data for features that are predictive of this subset of partisans</li>
 </ul></li>
-<li>Training and Test Sets
-<ul>
-<li>The same 5% of the CES data is used for each test (n = 2,541).</li>
-<li>Validation of each test is done on the remaining 95% of the data (n = 48,284).</li>
-<li>Training set size is based on computatoinal limitations.</li>
 </ul></li>
 </ul>
-</section>
-<section class="slide level2">
+<!--
+::: {.fragment}
+ANES Data:
 
-<p><strong>Note on Validation Data</strong></p>
-<ul>
-<li>Directly use the 2012 CES data to validate the models.</li>
-<li>Its sample size and sampling strategy make it the best option for estimating state-level partisanship <span class="citation" data-cites="gelmanChapter">Ornstein (<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span>.</li>
-</ul>
-<p><strong>Postratification Frame</strong></p>
-<ul>
-<li>Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA <span class="citation" data-cites="ipumsUsa">(<a href="#/references" role="doc-biblioref" onclick=""><strong>ipumsUsa?</strong></a>)</span>.</li>
-</ul>
+- available for every year of interest
+- consistent measures across years (measurement validity)
+- sacrifices representativeness
+:::
+-->
 <aside class="notes">
 <ul>
-<li>Will talk more about the poststratification frame later.</li>
-<li>Integrated Public Use Microdata Series (IPUMS)
+<li>Summarize this slide
 <ul>
-<li>a project of the Minnesota Population Center.</li>
+<li>The last 35 or so years could represent a “contemporary era” for politics</li>
 </ul></li>
+<li>Have made some progress. I will present my initial results and then show how feature selection, a data mining technique, has improved my model.</li>
+<li>Need to mine features: It is difficult to predict independent partisanship, and existing academic theories are limited in this regard.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -484,48 +420,56 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="estimating-state-level-party-identification" class="slide level2">
-<h2>Estimating State-level Party Identification</h2>
-<p><strong>Steps</strong></p>
+<section id="multilevel-regression-and-poststratification" class="slide level2">
+<h2>Multilevel Regression and Poststratification</h2>
+<p>A technique used to improve the representativeness of survey data.</p>
+<p>Steps:</p>
 <ol type="1">
-<li>Predictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)
-<ul>
-<li>I begin with a Bayesian multilevel multinomial logit model.</li>
-</ul></li>
-<li>Poststratify predictions for at the state and national levels.</li>
+<li>Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for.
+<ol type="1">
+<li>Use predictors that are available in census data so that accurate estimates of the population can be used later during weighting.</li>
+</ol></li>
+<li>Make predictions: Use the model from <strong>Step 1</strong> to make predictions on measurable characteristics from the populations of interest.</li>
+<li>Poststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest.</li>
 </ol>
 </section>
-<section id="predictive-modeling" class="slide level2">
-<h2>Predictive Modeling</h2>
-<p><strong>Model specification</strong></p>
+<section id="state-level-estimation" class="slide level2">
+<h2>State-level Estimation</h2>
 <ul>
-<li>Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors</li>
-<li>Random intercepts for all predictors except “male”</li>
-<li>Interactions: gender &amp; eth., educ. &amp; age, educ. &amp; eth.</li>
+<li>The above model consisting of demographic predictors can be modified to include sub-national units, like states, and other state-level predictors.</li>
 </ul>
-<p><span class="math display">\[
-Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
-\alpha_{\rm s[i]}^{\rm state}
-+ \alpha_{\rm a[i]}^{\rm age}
-+ \alpha_{\rm r[i]}^{\rm eth}
-+ \alpha_{\rm e[i]}^{\rm educ}
-+ \beta^{\rm male} \cdot {\rm male}_{\rm i}
-\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
-+ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
-+ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
-\text{(+ state-level predictors)}
-]
-\]</span></p>
-<p align="right">
-<span class="citation" data-cites="gelmanChapter">(see <a href="#/references" role="doc-biblioref" onclick="">Gelman n.d.</a>)</span>
-</p>
+<ul>
+<li class="fragment">The model-specification tests that I have done so far involve state-level predictors.</li>
+</ul>
 <aside class="notes">
 <ul>
-<li>exlain why I chose MRP, and why I’m using Bayesian methods
+<li>state level predictors improve predictive accuracy and facilitate sub-national estimation</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="validation" class="slide level2">
+<h2>Validation</h2>
+<p>Model Training and Validation: Congressional Election Studies</p>
+<p>n = 54,535</p>
+<p>I can simulate my use-case using this larger dataset.</p>
 <ul>
-<li>Regularized model isn’t necessary with a Bayesian approach</li>
-<li>Bayesian methods are more flexible</li>
-</ul></li>
+<li>Training set: 10% of the full sample</li>
+<li>Test set: The remaining 90%</li>
+<li>Later work: simulations of geographic biases due to missing levels of the geographic data at the state and county levels</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Missing levels for county and state are present in the ANES data I will ultimately derive my estimates from.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -541,6 +485,9 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
 </section>
 <section id="poststratification" class="slide level2">
 <h2>Poststratification</h2>
+<ul>
+<li>Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA <span class="citation" data-cites="ipumsUsa">(<a href="#/references" role="doc-biblioref" onclick=""><span>“Steven <span>Ruggles</span>, <span>Sarah Flood</span>, <span>Matthew Sobek</span>, <span>Danika Brockman</span>, <span>Grace Cooper</span>, <span>Stephanie Richards</span>, and <span>Megan Schouweiler</span>. <span>IPUMS USA</span>: <span>Version</span> 13.0 [Dataset]. <span>Minneapolis</span>, <span>MN</span>: <span>IPUMS</span>, 2023. <span class="nocase">https://doi.org/10.18128/D010.V13.0</span>,”</span> n.d.</a>)</span>.</li>
+</ul>
 <p><br></p>
 <p><strong>Example Poststratification Frame</strong></p>
 <div class="cell">
@@ -646,6 +593,61 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
           display:block!important;
       }</style></aside>
 </section>
+<section id="estimating-state-level-party-identification" class="slide level2">
+<h2>Estimating State-level Party Identification</h2>
+<p><strong>Steps</strong></p>
+<ol type="1">
+<li>Predictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)
+<ul>
+<li>I begin with a Bayesian multilevel multinomial logit model.</li>
+</ul></li>
+<li>Poststratify predictions for at the state and national levels.</li>
+</ol>
+</section>
+<section id="predictive-modeling" class="slide level2">
+<h2>Predictive Modeling</h2>
+<p><strong>Model specification</strong></p>
+<ul>
+<li>Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors</li>
+<li>Random intercepts for all predictors except “male”</li>
+<li>Interactions: gender &amp; eth., educ. &amp; age, educ. &amp; eth.</li>
+</ul>
+<p><span class="math display">\[
+Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
+\alpha_{\rm s[i]}^{\rm state}
++ \alpha_{\rm a[i]}^{\rm age}
++ \alpha_{\rm r[i]}^{\rm eth}
++ \alpha_{\rm e[i]}^{\rm educ}
++ \beta^{\rm male} \cdot {\rm male}_{\rm i}
+\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
++ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
++ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
+\text{(+ state-level predictors)}
+]
+\]</span></p>
+<p align="right">
+<span class="citation" data-cites="gelmanChapter">(see <a href="#/references" role="doc-biblioref" onclick="">Gelman n.d.</a>)</span>
+</p>
+<aside class="notes">
+<ul>
+<li>exlain why I chose MRP, and why I’m using Bayesian methods
+<ul>
+<li>Regularized model isn’t necessary with a Bayesian approach</li>
+<li>Bayesian methods are more flexible</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section class="slide level2">
 
 <p><br></p>
@@ -689,7 +691,7 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
 <section class="slide level2">
 
 
-<img data-src="index_files/figure-revealjs/fig-ind-1.png" width="960" class="r-stretch quarto-figure-center"><p class="caption">Figure&nbsp;3: Predicted Proportion Identifying as Independent.</p></section></section>
+<img data-src="index_files/figure-revealjs/fig-ind-1.png" width="960" class="r-stretch quarto-figure-center"><p class="caption">Figure&nbsp;3: Predicted Proportion Identifying as Independent.</p></section>
 <section id="references" class="title-slide slide level1 smaller scrollable">
 <h1>References</h1>
 
@@ -700,11 +702,8 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
 <div id="ref-gelmanChapter" class="csl-entry" role="doc-biblioentry">
 Gelman, and Andrew, Justin H. Phillips. n.d. <em>Chapter 1 <span>Introduction</span> to <span>Mister P</span> | <span>Multilevel Regression</span> and <span>Poststratification Case Studies</span></em>. Accessed March 23, 2023.
 </div>
-<div id="ref-ornstein2023" class="csl-entry" role="doc-biblioentry">
-Ornstein, Joseph T. 2023. <span>“Getting the Most Out of Surveys: <span>Multilevel</span> Regression and Poststratification.”</span> In <em>Causality in Policy Studies: A Pluralist Toolbox</em>, edited by Alessia Damonte and Fedra Negri, 99–122. <span>Cham</span>: <span>Springer International Publishing</span>. <a href="https://doi.org/10.1007/978-3-031-12982-7_5">https://doi.org/10.1007/978-3-031-12982-7_5</a>.
-</div>
-<div id="ref-park2004Bayesian" class="csl-entry" role="doc-biblioentry">
-Park, David K., Andrew Gelman, and Joseph Bafumi. 2004. <span>“Bayesian <span>Multilevel Estimation</span> with <span>Poststratification</span>: <span>State-Level Estimates</span> from <span>National Polls</span>.”</span> <em>Political Analysis</em> 12 (4): 375–85. <a href="https://www.jstor.org/stable/25791784">https://www.jstor.org/stable/25791784</a>.
+<div id="ref-ipumsUsa" class="csl-entry" role="doc-biblioentry">
+<span>“Steven <span>Ruggles</span>, <span>Sarah Flood</span>, <span>Matthew Sobek</span>, <span>Danika Brockman</span>, <span>Grace Cooper</span>, <span>Stephanie Richards</span>, and <span>Megan Schouweiler</span>. <span>IPUMS USA</span>: <span>Version</span> 13.0 [Dataset]. <span>Minneapolis</span>, <span>MN</span>: <span>IPUMS</span>, 2023. <span class="nocase">https://doi.org/10.18128/D010.V13.0</span>.”</span> n.d.
 </div>
 </div>
 </section>
