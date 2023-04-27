@@ -8,6 +8,7 @@ format:
 ---
 
 ```{r}
+library(tidyverse)
 knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
 ```
 
@@ -127,7 +128,7 @@ knitr::kable(psframe_ex)
 
 ## ANES Data
 
-```{r}
+```{r, cache=TRUE}
 raw_data <- read_csv("anes.csv")
 ```
 
