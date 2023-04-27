@@ -7,6 +7,10 @@ format:
         theme: [default, custom.scss]
 ---
 
+```{r}
+knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
+```
+
 ## Introduction
 
 ::: {.columns}
@@ -30,14 +34,15 @@ School of Government and Public Policy
 
 ## Motivation and Problem
 
-Many important political processes occur within states, but it is not straightforward to measure public opinion at this level.
+Many important political processes occur at the state level, but it is not usually straightforward to measure public opinion at this in sub-national units.
 
 - Public opinion data measured at the level of individual states is few and far between.
 - Large public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.
     - Priorities: national representativeness, in-person interviews (over web-based surveys)
     - Consequences: 
         - Smaller sample sizes
-        - Area-clustered sampling, which saves money at the expense of subnational representation
+        - Area-clustered sampling
+            - Not representative of sub-national units
 
 ## Project Objectives
 
@@ -70,46 +75,41 @@ A technique used to improve the representativeness of survey data.
 
 Steps:
 
-1. Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for. 
-    1. Use predictors that are available in census data so that accurate estimates of the population can be used later during weighting.
+1. Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for. I use Bayesian multilevel multinomial regression.
+    1. Use predictors that are available in census data so that accurate estimates of the population proportions can be used later during weighting.
 2. Make predictions: Use the model from **Step 1** to make predictions on measurable characteristics from the populations of interest.
 3. Poststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest.
 
-## State-level Estimation
+## Predictors
 
-- The above model consisting of demographic predictors can be modified to include sub-national units, like states, and other state-level predictors.
+Individual-level predictors: Age, Race, Sex, Education
 
->- The model-specification tests that I have done so far involve state-level predictors.
+- categorical variables
+
+The above demographic predictors can be supplemented to include sub-national units, like states, and other state-level predictors (@gelmanChapter).
+
+State level predictors: 
+
+- Republican vote share from the most recent election
+- Region (Northeast, Midwest, South, West, East, Northwest)
+- racial composition (pct. black residents)
+- religious composition (pct. Christian)
+- urbanity (pct. urban population)
 
 ::: {.notes}
 - state level predictors improve predictive accuracy and facilitate sub-national estimation
 :::
 
-## Validation
-
-Model Training and Validation: Congressional Election Studies
-
-n = 54,535
-
-I can simulate my use-case using this larger dataset. 
-
-- Training set: 10% of the full sample
-- Test set: The remaining 90%
-- Later work: simulations of geographic biases due to missing levels of the geographic data at the state and county levels
-
-::: {.notes}
-- Missing levels for county and state are present in the ANES data I will ultimately derive my estimates from.
-:::
-
 ## Poststratification
 
-- Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA [@ipumsUsa]. 
+- Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA.
+    - Yearly demographic estimates of the population, based on 5 years of prior data.
 
 <br>
 
 **Example Poststratification Frame**
 
-```{r}
+```{r, echo = FALSE, include = TRUE}
 #| tbl-colwidths: [60,40]
 load("/home/reed/Dropbox/01-samara-ra/presentations/mrp-presentation/psframe-ex.RData")
 source("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/modeling-functions.r")
@@ -125,147 +125,10 @@ knitr::kable(psframe_ex)
 - Explain n per cell and overall proportions
 :::
 
-## Estimating State-level Party Identification 
-
-**Steps**
-
-1. Predictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)
-    - I begin with a Bayesian multilevel multinomial logit model.
-2. Poststratify predictions for at the state and national levels.
-
-## Predictive Modeling
-
-**Model specification**
-
-- Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors
-- Random intercepts for all predictors except "male"
-- Interactions: gender & eth., educ. & age, educ. & eth.
-
-$$
-Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
-\alpha_{\rm s[i]}^{\rm state}
-+ \alpha_{\rm a[i]}^{\rm age}
-+ \alpha_{\rm r[i]}^{\rm eth}
-+ \alpha_{\rm e[i]}^{\rm educ}
-+ \beta^{\rm male} \cdot {\rm male}_{\rm i} 
-\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
-+ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
-+ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
-\text{(+ state-level predictors)}
-]
-$$
-
-<p align="right">[see @gelmanChapter]</p>
-
-::: {.notes}
-- exlain why I chose MRP, and why I'm using Bayesian methods
-    - Regularized model isn't necessary with a Bayesian approach
-    - Bayesian methods are more flexible
-:::
-
----
-
-<br>
-
-<p align="center">
-**National-level Poststratification**
-</p>
-
-$$
-\theta^{MRP} = \frac{\sum N_j \theta_j}{\sum N_j}
-$$
-
-<p align="center">
-**State-level Poststratification**
-</p>
-
-$$
-\theta_s^{MRP} = \frac{\sum_{j \in s} N_j \theta_j}{\sum_{j \in s} N_j}
-$$
-
-where $\theta$ is the predicted party identification, $s$ is the state, $N$ is the number of cells in the poststratification frame, and $j$ is each cell of the poststratification frame.
-
-:::{.notes}
-- We poststratify our individual level predictions to estimate party identification at the national and state levels.
-:::
-
----
-
-```{r rep results}
-#| label: fig-dem
-#| fig-cap: "Predicted Proportion Identifying as Democratic."
-#| warning: false
-
-library(usmap)
-library(tidyverse)
-# Load map and merge data
-states_map <- us_map(regions = "states")
-states_df_melted_dem <- stpreds_state_output %>% filter(id == "dem") |> select(state, mean_pid)
-states_map <- left_join(states_map, states_df_melted_dem, by = c("full" = "state")) %>% drop_na()
-# Plot
-ggplot(states_map, aes(x = x, y = y, group = group)) +
-  geom_polygon(
-    aes(fill = mean_pid),
-    colour = "black",
-    linetype = "solid"
-  ) +
-  theme_void() +
-  scale_fill_gradient(
-    limits = c(0.25, .65), breaks = c(.25, .65),
-                       name = "Dem", low = "white", high = "#051d45") + 
-  theme(legend.margin=margin(l = 0.5, unit='cm'))
-```
-
----
-
-```{r rep results}
-#| label: fig-rep
-#| fig-cap: "Predicted Proportion Identifying as Republican."
-#| warning: false
- 
-# Load map and merge data
-states_map <- us_map(regions = "states")
-states_df_melted_rep <- stpreds_state_output %>% filter(id == "rep") |> select(state, mean_pid)
-states_map <- left_join(states_map, states_df_melted_rep, by = c("full" = "state")) %>% drop_na()
-# Plot
-ggplot(states_map, aes(x = x, y = y, group = group)) +
-  geom_polygon(
-    aes(fill = mean_pid),
-    colour = "black",
-    linetype = "solid"
-  ) +
-  theme_void() +
-  scale_fill_gradient(
-    limits = c(0.2, .62), 
-    breaks = c(.2, .62),
-                       name = "Rep", low = "white", high = "#450505") + 
-  theme(legend.margin=margin(l = 0.5, unit='cm'))
-```
-
----
+## ANES Data
 
 ```{r}
-#| label: fig-ind
-#| fig-cap: "Predicted Proportion Identifying as Independent."
-#| warning: false
- 
-# Load map and merge data
-states_map <- us_map(regions = "states")
-states_df_melted_ind <- stpreds_state_output %>% filter(id == "ind") |> select(state, mean_pid)
-states_map <- left_join(states_map, states_df_melted_ind, by = c("full" = "state")) %>% drop_na()
-# Plot
-ggplot(states_map, aes(x = x, y = y, group = group)) +
-  geom_polygon(
-    aes(fill = mean_pid),
-    colour = "black",
-    linetype = "solid"
-  ) +
-  theme_void() +
-  scale_fill_gradient(
-    limits = c(0.09, .23), 
-    breaks = c(0.09, .23), 
-                       name = "Ind", low = "white", high = "#8a5603") + 
-  theme(legend.margin=margin(l = 0.5, unit='cm'))
+raw_data <- read_csv("anes.csv")
 ```
 
-# References
+## References

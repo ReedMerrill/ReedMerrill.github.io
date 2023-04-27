@@ -347,6 +347,12 @@
   <p class="author">Reed Merrill</p>
 </section>
 
+<section class="slide level2">
+
+<div class="cell">
+
+</div>
+</section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <div class="columns">
@@ -364,7 +370,7 @@
 </section>
 <section id="motivation-and-problem" class="slide level2">
 <h2>Motivation and Problem</h2>
-<p>Many important political processes occur within states, but it is not straightforward to measure public opinion at this level.</p>
+<p>Many important political processes occur at the state level, but it is not usually straightforward to measure public opinion at this in sub-national units.</p>
 <ul>
 <li>Public opinion data measured at the level of individual states is few and far between.</li>
 <li>Large public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.
@@ -373,7 +379,10 @@
 <li>Consequences:
 <ul>
 <li>Smaller sample sizes</li>
-<li>Area-clustered sampling, which saves money at the expense of subnational representation</li>
+<li>Area-clustered sampling
+<ul>
+<li>Not representative of sub-national units</li>
+</ul></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -425,21 +434,28 @@ ANES Data:
 <p>A technique used to improve the representativeness of survey data.</p>
 <p>Steps:</p>
 <ol type="1">
-<li>Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for.
+<li>Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for. I use Bayesian multilevel multinomial regression.
 <ol type="1">
-<li>Use predictors that are available in census data so that accurate estimates of the population can be used later during weighting.</li>
+<li>Use predictors that are available in census data so that accurate estimates of the population proportions can be used later during weighting.</li>
 </ol></li>
 <li>Make predictions: Use the model from <strong>Step 1</strong> to make predictions on measurable characteristics from the populations of interest.</li>
 <li>Poststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest.</li>
 </ol>
 </section>
-<section id="state-level-estimation" class="slide level2">
-<h2>State-level Estimation</h2>
+<section id="predictors" class="slide level2">
+<h2>Predictors</h2>
+<p>Individual-level predictors: Age, Race, Sex, Education</p>
 <ul>
-<li>The above model consisting of demographic predictors can be modified to include sub-national units, like states, and other state-level predictors.</li>
+<li>categorical variables</li>
 </ul>
+<p>The above demographic predictors can be supplemented to include sub-national units, like states, and other state-level predictors (<span class="citation" data-cites="gelmanChapter">Gelman (<a href="#/references" role="doc-biblioref" onclick="">n.d.</a>)</span>).</p>
+<p>State level predictors:</p>
 <ul>
-<li class="fragment">The model-specification tests that I have done so far involve state-level predictors.</li>
+<li>Republican vote share from the most recent election</li>
+<li>Region (Northeast, Midwest, South, West, East, Northwest)</li>
+<li>racial composition (pct. black residents)</li>
+<li>religious composition (pct. Christian)</li>
+<li>urbanity (pct. urban population)</li>
 </ul>
 <aside class="notes">
 <ul>
@@ -457,36 +473,13 @@ ANES Data:
           display:block!important;
       }</style></aside>
 </section>
-<section id="validation" class="slide level2">
-<h2>Validation</h2>
-<p>Model Training and Validation: Congressional Election Studies</p>
-<p>n = 54,535</p>
-<p>I can simulate my use-case using this larger dataset.</p>
-<ul>
-<li>Training set: 10% of the full sample</li>
-<li>Test set: The remaining 90%</li>
-<li>Later work: simulations of geographic biases due to missing levels of the geographic data at the state and county levels</li>
-</ul>
-<aside class="notes">
-<ul>
-<li>Missing levels for county and state are present in the ANES data I will ultimately derive my estimates from.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
 <section id="poststratification" class="slide level2">
 <h2>Poststratification</h2>
 <ul>
-<li>Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA <span class="citation" data-cites="ipumsUsa">(<a href="#/references" role="doc-biblioref" onclick=""><span>“Steven <span>Ruggles</span>, <span>Sarah Flood</span>, <span>Matthew Sobek</span>, <span>Danika Brockman</span>, <span>Grace Cooper</span>, <span>Stephanie Richards</span>, and <span>Megan Schouweiler</span>. <span>IPUMS USA</span>: <span>Version</span> 13.0 [Dataset]. <span>Minneapolis</span>, <span>MN</span>: <span>IPUMS</span>, 2023. <span class="nocase">https://doi.org/10.18128/D010.V13.0</span>,”</span> n.d.</a>)</span>.</li>
+<li>Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA.
+<ul>
+<li>Yearly demographic estimates of the population, based on 5 years of prior data.</li>
+</ul></li>
 </ul>
 <p><br></p>
 <p><strong>Example Poststratification Frame</strong></p>
@@ -593,107 +586,11 @@ ANES Data:
           display:block!important;
       }</style></aside>
 </section>
-<section id="estimating-state-level-party-identification" class="slide level2">
-<h2>Estimating State-level Party Identification</h2>
-<p><strong>Steps</strong></p>
-<ol type="1">
-<li>Predictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)
-<ul>
-<li>I begin with a Bayesian multilevel multinomial logit model.</li>
-</ul></li>
-<li>Poststratify predictions for at the state and national levels.</li>
-</ol>
+<section id="anes-data" class="slide level2">
+<h2>ANES Data</h2>
 </section>
-<section id="predictive-modeling" class="slide level2">
-<h2>Predictive Modeling</h2>
-<p><strong>Model specification</strong></p>
-<ul>
-<li>Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors</li>
-<li>Random intercepts for all predictors except “male”</li>
-<li>Interactions: gender &amp; eth., educ. &amp; age, educ. &amp; eth.</li>
-</ul>
-<p><span class="math display">\[
-Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
-\alpha_{\rm s[i]}^{\rm state}
-+ \alpha_{\rm a[i]}^{\rm age}
-+ \alpha_{\rm r[i]}^{\rm eth}
-+ \alpha_{\rm e[i]}^{\rm educ}
-+ \beta^{\rm male} \cdot {\rm male}_{\rm i}
-\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
-+ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
-+ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
-\text{(+ state-level predictors)}
-]
-\]</span></p>
-<p align="right">
-<span class="citation" data-cites="gelmanChapter">(see <a href="#/references" role="doc-biblioref" onclick="">Gelman n.d.</a>)</span>
-</p>
-<aside class="notes">
-<ul>
-<li>exlain why I chose MRP, and why I’m using Bayesian methods
-<ul>
-<li>Regularized model isn’t necessary with a Bayesian approach</li>
-<li>Bayesian methods are more flexible</li>
-</ul></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section class="slide level2">
-
-<p><br></p>
-<p align="center">
-<strong>National-level Poststratification</strong>
-</p>
-<p><span class="math display">\[
-\theta^{MRP} = \frac{\sum N_j \theta_j}{\sum N_j}
-\]</span></p>
-<p align="center">
-<strong>State-level Poststratification</strong>
-</p>
-<p><span class="math display">\[
-\theta_s^{MRP} = \frac{\sum_{j \in s} N_j \theta_j}{\sum_{j \in s} N_j}
-\]</span></p>
-<p>where <span class="math inline">\(\theta\)</span> is the predicted party identification, <span class="math inline">\(s\)</span> is the state, <span class="math inline">\(N\)</span> is the number of cells in the poststratification frame, and <span class="math inline">\(j\)</span> is each cell of the poststratification frame.</p>
-<aside class="notes">
-<ul>
-<li>We poststratify our individual level predictions to estimate party identification at the national and state levels.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section class="slide level2">
-
-
-<img data-src="index_files/figure-revealjs/fig-dem-1.png" width="960" class="r-stretch quarto-figure-center"><p class="caption">Figure&nbsp;1: Predicted Proportion Identifying as Democratic.</p></section>
-<section class="slide level2">
-
-
-<img data-src="index_files/figure-revealjs/fig-rep-1.png" width="960" class="r-stretch quarto-figure-center"><p class="caption">Figure&nbsp;2: Predicted Proportion Identifying as Republican.</p></section>
-<section class="slide level2">
-
-
-<img data-src="index_files/figure-revealjs/fig-ind-1.png" width="960" class="r-stretch quarto-figure-center"><p class="caption">Figure&nbsp;3: Predicted Proportion Identifying as Independent.</p></section>
-<section id="references" class="title-slide slide level1 smaller scrollable">
-<h1>References</h1>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
 
 <div class="footer footer-default">
 
@@ -701,9 +598,6 @@ Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-gelmanChapter" class="csl-entry" role="doc-biblioentry">
 Gelman, and Andrew, Justin H. Phillips. n.d. <em>Chapter 1 <span>Introduction</span> to <span>Mister P</span> | <span>Multilevel Regression</span> and <span>Poststratification Case Studies</span></em>. Accessed March 23, 2023.
-</div>
-<div id="ref-ipumsUsa" class="csl-entry" role="doc-biblioentry">
-<span>“Steven <span>Ruggles</span>, <span>Sarah Flood</span>, <span>Matthew Sobek</span>, <span>Danika Brockman</span>, <span>Grace Cooper</span>, <span>Stephanie Richards</span>, and <span>Megan Schouweiler</span>. <span>IPUMS USA</span>: <span>Version</span> 13.0 [Dataset]. <span>Minneapolis</span>, <span>MN</span>: <span>IPUMS</span>, 2023. <span class="nocase">https://doi.org/10.18128/D010.V13.0</span>.”</span> n.d.
 </div>
 </div>
 </section>
