@@ -7,9 +7,8 @@ format:
         theme: [default, custom.scss]
 ---
 
-```{r}
+```{r setup, echo=FALSE, include=FALSE, message=FALSE}
 library(tidyverse)
-knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
 ```
 
 ## Introduction
@@ -110,7 +109,7 @@ State level predictors:
 
 **Example Poststratification Frame**
 
-```{r, echo = FALSE, include = TRUE}
+```{r poststrat ex, include=TRUE}
 #| tbl-colwidths: [60,40]
 load("/home/reed/Dropbox/01-samara-ra/presentations/mrp-presentation/psframe-ex.RData")
 source("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/modeling-functions.r")
@@ -126,9 +125,59 @@ knitr::kable(psframe_ex)
 - Explain n per cell and overall proportions
 :::
 
+## The Challenge of Predicting Independent Partisanship
+
+```{r val data, cache=TRUE}
+# load model testing results
+load("/home/reed/Dropbox/01-samara-ra/data-collection/scripts/pid/ces-08to20/model-testing/analysis-w-prep.RData")
+mrp_results <- mrp_results |> drop_na() # the religion data is missing for ND, so needs to be dropped
+mrp_results <- mrp_results |>
+    left_join(
+        all_truth,
+        by = c("state", "party")
+    )
+z95 <- qnorm(0.975)
+model_perf_by_party <- mrp_results |>
+    group_by(model, party) |>
+    summarize(
+        corr = cor.test(mean_pid, truth_pid, method = "pearson", conf.level = .95)$estimate,
+        corr_conflow = cor.test(mean_pid, truth_pid, method = "pearson", conf.level = .95)$conf.int[1],
+        corr_confhigh = cor.test(mean_pid, truth_pid, method = "pearson", conf.level = .95)$conf.int[2],
+        mae = mean(abs(mean_pid - truth_pid)),
+        sd_ae = sd(abs(mean_pid - truth_pid))
+    )
+# reorder grouping vars
+# model
+model_perf_by_party$model <- model_perf_by_party$model |> 
+    factor(
+        levels = c(
+            "baseline",
+            "stpreds",
+            "stpreds_plus",
+            "Christian"
+        )
+    )
+levels(model_perf_by_party$model)  <- c("1", "2", "3", "4")
+```
+```{r mae plot}
+# MAE plot
+ggplot(model_perf_by_party, aes(x = model, y = mae, color = party)) +
+    geom_point(position = position_dodge(width = 0.75)) +
+    geom_errorbar(
+        aes(ymin = mae - sd_ae, ymax = mae + sd_ae), 
+        width = 0.2, position = position_dodge(width = 0.75)) +
+  theme_minimal() +
+  xlab("Model") +
+  ylab("Estimate") +
+  ggtitle("Mean Absolute Error") +
+  scale_color_manual(values = c("blue", "red", "yellow")) +
+  guides(color = guide_legend(title = "Party")) +
+  coord_flip()
+```
+
 ## ANES Data
 
-```{r, cache=TRUE}
+```{r anes, cache=TRUE}
 raw_data <- read_csv("anes.csv")
 ```
 
