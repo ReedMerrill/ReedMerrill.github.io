@@ -161,7 +161,7 @@ ggplot(model_perf_by_party, aes(x = model, y = abs_error, fill = party)) +
     xlab("Model") +
     ylab("Estimate") +
     ggtitle("Error Variance of Predictions") +
-    scale_fill_manual(values = c("red", "blue", "yellow")) +
+    scale_fill_manual(values = c("red", "blue", "tyellow")) +
     guides(color = guide_legend(title = "Party"))
 ```
 
