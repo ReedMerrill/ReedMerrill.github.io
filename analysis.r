@@ -3,7 +3,7 @@ library(naniar)
 rm(list = ls())
 
 # Read in the data
-load("/home/reed/data/anes-cummulative/anes-cdf.rds")
+raw_dt <- rio::import("/home/reed/data/anes-cummulative/anes-cdf.sav")
 # This is based on the SPSS format official version. It has missing
     # values pre-coded as NA
 
@@ -94,8 +94,26 @@ dt <- dt |>
 
 final_vars <- dt |> names()
 
-################################################################################
-# Imputation prep
+##########
+# Output for Imputation
 
 impute_mat <- dt |> data.matrix()
 save(impute_mat, file = "hpc-jobs/impute-mat-raw.rds")
+
+################################################################################
+# Variable Importance Analysis
+library(party)
+
+# load in the imputed data
+load("/home/reed/Dropbox/01-samara-ra/data-collection/data/input/pid/input/anes/data/cummulative_all-88-20-vars_umputed.rds") #nolint
+
+# get the data in the right format
+imputed_dt <- mat_imputed$ximp |> as.data.frame()
+
+rf_fit <- cforest(
+    VCF0303 ~ .,
+    data = imputed_dt
+)
+
+# get the variable importance
+rf_full_vi <- varimp(rf_fit)
