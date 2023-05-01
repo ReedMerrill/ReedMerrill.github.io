@@ -1,3 +1,0 @@
-- clean up existing slides
-- perform variable importance analysis
-- write section on using non-census variables for post-stratification
