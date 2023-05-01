@@ -9,6 +9,7 @@ format:
 
 ```{r setup, echo=FALSE, include=FALSE, message=FALSE}
 library(tidyverse)
+library(ggrepel)
 ```
 
 ## Introduction
@@ -125,7 +126,7 @@ knitr::kable(psframe_ex)
 - Explain n per cell and overall proportions
 :::
 
-## Error Variance of Predictions
+## Error Variance of Predictions by State
 
 ```{r val data, cache=TRUE}
 #####
@@ -168,14 +169,28 @@ levels(model_perf_by_party$model)  <- c("1", "2", "3", "4")
 ```
 ```{r plot 1}
 load("/home/reed/Dropbox/helpers/party-colors.RData")
+
+# prep to label outliers
+findoutlier <- function(x) {
+  return(x < quantile(x, .25) - 1.5 * IQR(x) | x > quantile(x, .75) + 1.5 * IQR(x))
+}
+
+model_perf_by_party <- model_perf_by_party |>
+    group_by(model, party) |>
+    mutate(outlier = ifelse(findoutlier(abs_error), abbr, NA))
+
 # plot
-ggplot(model_perf_by_party, aes(x = model, y = abs_error, fill = party)) +
+ggplot(model_perf_by_party, aes(x = party, y = abs_error, fill = party)) +
     geom_boxplot() +
     theme_minimal() +
     xlab("Model") +
-    ylab("Estimate") +
+    ylab("Absolute Error") +
     scale_fill_manual(values = c(party_colors$dem, party_colors$ind, party_colors$rep)) +
-    guides(color = guide_legend(title = "Party"))
+    guides(color = guide_legend(title = "Party")) +
+    geom_text_repel(aes(label = outlier), na.rm = TRUE, size = 3) +
+    facet_grid(~ model) +
+    scale_x_discrete(position = "top") +
+    theme(axis.text.x = element_blank())
 ```
 
 ## ANES Data
