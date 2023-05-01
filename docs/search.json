@@ -1,31 +1,10 @@
 [
   {
-    "objectID": "index.html#data-public-opinion-surveys",
-    "href": "index.html#data-public-opinion-surveys",
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
     "title": "Estimating State-level Partisanship",
-    "section": "Data: Public Opinion Surveys",
-    "text": "Data: Public Opinion Surveys\n\nTable 1: Survey Characteristics in Presidential Election Years\n\n\n\n\n\n\n\n\nSurvey\nTypical Sample Size\nSample Design\nYears Active\n\n\n\n\nANES\n1,200–6,000 (1988–2020)\nHybrid Matched Random & Cluster Sampling\n1948–present\n\n\nCES\n50,000–60,000\nMatched Random Sample\n2008–present\n\n\n\n\nData: 2012 CES.\n\nFirst year of the CES that has a large sample size (n = 54,535).\nInitial testing of the 2008 CES (n = 32,800) showed it was much less representative than the 2012 survey.\n\nTraining and Test Sets\n\nThe same 5% of the CES data is used for each test (n = 2,541).\nValidation of each test is done on the remaining 95% of the data (n = 48,284).\nTraining set size is based on computational limitations."
-  },
-  {
-    "objectID": "index.html#estimating-state-level-party-identification",
-    "href": "index.html#estimating-state-level-party-identification",
-    "title": "Estimating State-level Partisanship",
-    "section": "Estimating State-level Party Identification",
-    "text": "Estimating State-level Party Identification\nSteps\n\nPredictive modeling of party identification (general multilevel regression, random forest, ensembles, etc.)\n\nI begin with a Bayesian multilevel multinomial logit model.\n\nPoststratify predictions for at the state and national levels."
-  },
-  {
-    "objectID": "index.html#predictive-modeling",
-    "href": "index.html#predictive-modeling",
-    "title": "Estimating State-level Partisanship",
-    "section": "Predictive Modeling",
-    "text": "Predictive Modeling\nModel: Bayesian multilevel multinomial logit model\n\nPredictors: State, Age, Ethnicity, Gender, Education, and state-level predictors\nRandom intercepts for all predictors except “male”\nInteractions: gender & eth., educ. & age, educ. & eth.\n\n\\[\nPr(y_i = \\text{dem, rep, ind}) = logit^{-1}[\n\\alpha_{\\rm s[i]}^{\\rm state}\n+ \\alpha_{\\rm a[i]}^{\\rm age}\n+ \\alpha_{\\rm r[i]}^{\\rm eth}\n+ \\alpha_{\\rm e[i]}^{\\rm educ}\n+ \\beta^{\\rm male} \\cdot {\\rm male}_{\\rm i}\n\\\\ + \\alpha_{\\rm m[i], r[i]}^{\\rm male.eth}\n+ \\alpha_{\\rm e[i], a[i]}^{\\rm educ.age}\n+ \\alpha_{\\rm e[i], r[i]}^{\\rm educ.eth}\n\\text{(+ state-level predictors)}\n]\n\\]\n\n(see Gelman n.d.)\n\n\n\nThis model, due to its Bayesian approach, allows highly collinear variables and non-regularized models to be estimated. In a non-Bayesian linear or multilevel regression setting, this model would fail.\nThe multilevel models estimated during the Bayesian regression will estimate intercepts for every combination of levels of these variables and weight them according to the sample size and variance present at each level. This allows smaller, less well represented levels of the data to contribute to the overall model fit without exhaggerating their importance."
-  },
-  {
-    "objectID": "index.html#poststratification",
-    "href": "index.html#poststratification",
-    "title": "Estimating State-level Partisanship",
-    "section": "Poststratification",
-    "text": "Poststratification\n\nConstructed using the 5-year version of the Census Bureau’s 2012 American Community Survey (ACS) via IPUMS USA.\n\nYearly demographic estimates of the population, based on 5 years of prior data\n\n\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\nregion\nrep. vote\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nSouth\n0.6055\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nSouth\n0.6055\nBlack\n1\n50-59\nHS\n29100\n\n\n…\n…\n…\n…\n…\n…\n…\n…\n\n\nWyoming\nWest\n0.6819\nBlack\n1\n30-39\nSome College\n120\n\n\nWyoming\nWest\n0.6819\nHispanic\n0\n70+\nHS\n271\n\n\n\n\n\nThis is part of poststratification frame, extracted from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
+    "section": "Introduction",
+    "text": "Introduction\n\n\nReed Merrill\nPhD Student, Political Science\nFields: American Politics and Methodology\n\nUniversity of Arizona\nSchool of Government and Public Policy"
   },
   {
     "objectID": "index.html#motivation-and-problem",
@@ -49,67 +28,11 @@
     "text": "Multilevel Regression and Poststratification:\nA technique used to improve the representativeness of unrepresentative survey data.\nSteps:\n\nMultilevel Regression: Train a model predicting the outcome on the survey data you want estimates for. I use Bayesian multilevel multinomial regression.\n\nUse predictors that are available in census data so that accurate estimates of the population proportions can be used during poststratification.\n\nMake predictions: Use the model from Step 1 to make predictions on characteristics from the broader populations of interest – in my case, states.\nPoststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest."
   },
   {
-    "objectID": "index.html#state-level-estimation",
-    "href": "index.html#state-level-estimation",
-    "title": "Estimating State-level Partisanship",
-    "section": "State-level Estimation",
-    "text": "State-level Estimation\n\nThe above model consisting of demographic predictors can be modified to include sub-national units, like states, and other state-level predictors.\n\n\nThe model-specification tests that I have done so far involve state-level predictors.\n\n\n\nstate level predictors improve predictive accuracy and facilitate sub-national estimation"
-  },
-  {
-    "objectID": "index.html#validation",
-    "href": "index.html#validation",
-    "title": "Estimating State-level Partisanship",
-    "section": "Validation",
-    "text": "Validation\nThe above procedure results in state-level estimates for each state are adjusted based on characteristics of each state and the proportion of different demographic combinations in them.\nTo test the accuracy of this model, I treated simple partisanship means taken from the Congressional Election Studies test set as the “truth”.\n\nSubtracted each state’s predicted partisanship distribution from the distribution of partisanship derived from the test set.\n\n\n\nThis procedure gives me a set of absolute errors in terms of how far each state’s predicted partisanship was from their “actual” partisanship.\nI used this procedure to the reduction in absolute error associated with different specifications of the predictive model."
-  },
-  {
-    "objectID": "index.html#introduction",
-    "href": "index.html#introduction",
-    "title": "Estimating State-level Partisanship",
-    "section": "Introduction",
-    "text": "Introduction\n\n\nReed Merrill\nPhD Student, Political Science\nFields: American Politics and Methodology\n\nUniversity of Arizona\nSchool of Government and Public Policy"
-  },
-  {
     "objectID": "index.html#predictors",
     "href": "index.html#predictors",
     "title": "Estimating State-level Partisanship",
     "section": "Predictors",
     "text": "Predictors\nIndividual Level\nThese need to be available in census data so that geographic weighting using census data can later be used. They must also be categorical.\nPredictors:\n\nAge (7 categories)\nRace (white, black, hispanic, other)\nSex (male, female)\nEducation (5 categories; No high school to Post-graduate Degree)"
-  },
-  {
-    "objectID": "index.html#anes-data",
-    "href": "index.html#anes-data",
-    "title": "Estimating State-level Partisanship",
-    "section": "ANES Data",
-    "text": "ANES Data"
-  },
-  {
-    "objectID": "index.html#references",
-    "href": "index.html#references",
-    "title": "Estimating State-level Partisanship",
-    "section": "References",
-    "text": "References\n\n\n\n\n\n\nGelman, and Andrew, Justin H. Phillips. n.d. Chapter 1 Introduction to Mister P | Multilevel Regression and Poststratification Case Studies. Accessed March 23, 2023."
-  },
-  {
-    "objectID": "index.html#the-challenge-of-predicting-independent-partisanship",
-    "href": "index.html#the-challenge-of-predicting-independent-partisanship",
-    "title": "Estimating State-level Partisanship",
-    "section": "The Challenge of Predicting Independent Partisanship",
-    "text": "The Challenge of Predicting Independent Partisanship"
-  },
-  {
-    "objectID": "index.html#error-variance-of-predictions",
-    "href": "index.html#error-variance-of-predictions",
-    "title": "Estimating State-level Partisanship",
-    "section": "Error Variance of Predictions",
-    "text": "Error Variance of Predictions"
-  },
-  {
-    "objectID": "index.html#state-level-error-variance-of-predictions-by-party-and-model",
-    "href": "index.html#state-level-error-variance-of-predictions-by-party-and-model",
-    "title": "Estimating State-level Partisanship",
-    "section": "State-level Error Variance of Predictions by Party and Model",
-    "text": "State-level Error Variance of Predictions by Party and Model\n\n\n\n\n1: Age, Race, Sex, Education\n2: Model 1 predictors + Previous Rep. vote share, Region\n3: Model 2 predicots + pct. Black, pct. Urban\n4: Model 3 predictors + pct. Christian"
   },
   {
     "objectID": "index.html#predictors-1",
@@ -119,11 +42,32 @@
     "text": "Predictors\nState-level\nThe individual-level predictors can be supplemented to include state-level predictors, because it is straighforward to account for variation in state-level predictors in the upcoming weighting step (see Gelman n.d.).\nPredictors:\n\nRepublican vote share from the most recent election\nRegion (Northeast, Midwest, West, South, North Central)\nracial composition (pct. black residents)\nurbanity (pct. urban population)\nreligious composition (pct. Christian)\n\n\n\nstate level predictors improve predictive accuracy and facilitate sub-national estimation"
   },
   {
+    "objectID": "index.html#poststratification",
+    "href": "index.html#poststratification",
+    "title": "Estimating State-level Partisanship",
+    "section": "Poststratification",
+    "text": "Poststratification\n\nConstructed using the 5-year version of the Census Bureau’s 2012 American Community Survey (ACS) via IPUMS USA.\n\nYearly demographic estimates of the population, based on 5 years of prior data\n\n\n\nExample Poststratification Frame\n\n\n\n\n\n\n\n\n\n\n\n\n\nstate\nregion\nrep. vote\neth\nmale\nage\neduc\nn\n\n\n\n\nAlabama\nSouth\n0.6055\nWhite\n0\n18-29\nNo HS\n26344\n\n\nAlabama\nSouth\n0.6055\nBlack\n1\n50-59\nHS\n29100\n\n\n…\n…\n…\n…\n…\n…\n…\n…\n\n\nWyoming\nWest\n0.6819\nBlack\n1\n30-39\nSome College\n120\n\n\nWyoming\nWest\n0.6819\nHispanic\n0\n70+\nHS\n271\n\n\n\n\n\nThis is part of poststratification frame, extracted from the 2012 frame that I constructed.\nDescribe the table.\nQickly explain the logic behind poststratification.\nUsing models based on the previous multilevel regression equation, we can predict party identification at the individual level.\nWe then poststratify these predictions to estimate party identification at the state and national levels.\nExplain n per cell and overall proportions"
+  },
+  {
     "objectID": "index.html#model-training-and-validation-approach",
     "href": "index.html#model-training-and-validation-approach",
     "title": "Estimating State-level Partisanship",
     "section": "Model Training and Validation Approach",
     "text": "Model Training and Validation Approach\nModel Training and Validation: Congressional Election Studies\nn = 54,535\nSimulate my use-case using this larger dataset.\n\nTraining set: 10% of the full sample per state\nTest set: The remaining 90%\n\n\n\nMissing levels for county and state are present in the ANES data I will ultimately derive my estimates from."
+  },
+  {
+    "objectID": "index.html#predictive-modeling",
+    "href": "index.html#predictive-modeling",
+    "title": "Estimating State-level Partisanship",
+    "section": "Predictive Modeling",
+    "text": "Predictive Modeling\nModel: Bayesian multilevel multinomial logit model\n\nPredictors: State, Age, Ethnicity, Gender, Education, and state-level predictors\nRandom intercepts for all predictors except “male”\nInteractions: gender & eth., educ. & age, educ. & eth.\n\n\\[\nPr(y_i = \\text{dem, rep, ind}) = logit^{-1}[\n\\alpha_{\\rm s[i]}^{\\rm state}\n+ \\alpha_{\\rm a[i]}^{\\rm age}\n+ \\alpha_{\\rm r[i]}^{\\rm eth}\n+ \\alpha_{\\rm e[i]}^{\\rm educ}\n+ \\beta^{\\rm male} \\cdot {\\rm male}_{\\rm i}\n\\\\ + \\alpha_{\\rm m[i], r[i]}^{\\rm male.eth}\n+ \\alpha_{\\rm e[i], a[i]}^{\\rm educ.age}\n+ \\alpha_{\\rm e[i], r[i]}^{\\rm educ.eth}\n\\text{(+ state-level predictors)}\n]\n\\]\n\n(see Gelman n.d.)\n\n\n\nThis model, due to its Bayesian approach, allows highly collinear variables and non-regularized models to be estimated. In a non-Bayesian linear or multilevel regression setting, this model would fail.\nThe multilevel models estimated during the Bayesian regression will estimate intercepts for every combination of levels of these variables and weight them according to the sample size and variance present at each level. This allows smaller, less well represented levels of the data to contribute to the overall model fit without exhaggerating their importance."
+  },
+  {
+    "objectID": "index.html#validation",
+    "href": "index.html#validation",
+    "title": "Estimating State-level Partisanship",
+    "section": "Validation",
+    "text": "Validation\nThe above procedure results in state-level estimates for each state are adjusted based on characteristics of each state and the proportion of different demographic combinations in them.\nTo test the accuracy of this model, I treated simple partisanship means taken from the Congressional Election Studies test set as the “truth”.\n\nSubtracted each state’s predicted partisanship distribution from the distribution of partisanship derived from the test set.\n\n\n\nThis procedure gives me a set of absolute errors in terms of how far each state’s predicted partisanship was from their “actual” partisanship.\nI used this procedure to the reduction in absolute error associated with different specifications of the predictive model."
   },
   {
     "objectID": "index.html#state-level-error-variance-of-predictions-by-model-and-party",
@@ -152,5 +96,12 @@
     "title": "Estimating State-level Partisanship",
     "section": "Independent Partisanship by state",
     "text": "Independent Partisanship by state"
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "Estimating State-level Partisanship",
+    "section": "References",
+    "text": "References\n\n\n\n\n\n\nGelman, and Andrew, Justin H. Phillips. n.d. Chapter 1 Introduction to Mister P | Multilevel Regression and Poststratification Case Studies. Accessed March 23, 2023."
   }
 ]
