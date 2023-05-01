@@ -117,3 +117,11 @@ rf_fit <- cforest(
 
 # get the variable importance
 rf_full_vi <- varimp(rf_fit)
+
+# sort and manually analyze variable importance
+top_vi <- head(sort(desc(rf_full_vi)))
+rf_full_vi <- sort(desc(rf_full_vi))
+view(rf_full_vi)
+view(sort(desc(rf_full_vi$row.names)))
+
+

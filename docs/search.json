@@ -103,5 +103,12 @@
     "title": "Estimating State-level Partisanship",
     "section": "Error Variance of Predictions",
     "text": "Error Variance of Predictions"
+  },
+  {
+    "objectID": "index.html#state-level-error-variance-of-predictions-by-party-and-model",
+    "href": "index.html#state-level-error-variance-of-predictions-by-party-and-model",
+    "title": "Estimating State-level Partisanship",
+    "section": "State-level Error Variance of Predictions by Party and Model",
+    "text": "State-level Error Variance of Predictions by Party and Model\n\n\n\n\n1: Age, Race, Sex, Education\n2: Model 1 predictors + Previous Rep. vote share, Region\n3: Model 2 predicots + pct. Black, pct. Urban\n4: Model 3 predictors + pct. Christian"
   }
 ]
