@@ -1,6 +1,7 @@
 ---
 title: "Estimating State-level Partisanship"
 author: "Reed Merrill"
+date: "May 1, 2023"
 bibliography: "mrp.bib"
 format:
     revealjs:
@@ -136,9 +137,94 @@ Predictors:
 - Explain n per cell and overall proportions
 :::
 
-## Model Training Approach
+## Model Training and Validation Approach
 
-- 
+Model Training and Validation: Congressional Election Studies
+
+n = 54,535
+
+Simulate my use-case using this larger dataset. 
+
+- Training set: 10% of the full sample per state
+- Test set: The remaining 90%
+
+::: {.notes}
+- Missing levels for county and state are present in the ANES data I will ultimately derive my estimates from.
+:::
+
+## Predictive Modeling
+
+Model: Bayesian multilevel multinomial logit model
+
+- Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors
+- Random intercepts for all predictors except "male"
+- Interactions: gender & eth., educ. & age, educ. & eth.
+
+$$
+Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
+\alpha_{\rm s[i]}^{\rm state}
++ \alpha_{\rm a[i]}^{\rm age}
++ \alpha_{\rm r[i]}^{\rm eth}
++ \alpha_{\rm e[i]}^{\rm educ}
++ \beta^{\rm male} \cdot {\rm male}_{\rm i} 
+\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
++ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
++ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
+\text{(+ state-level predictors)}
+]
+$$
+
+<p align="right">[see @gelmanChapter]</p>
+
+::: {.notes}
+- This model, due to its Bayesian approach, allows highly collinear variables and non-regularized models to be estimated. In a non-Bayesian linear or multilevel regression setting, this model would fail. 
+- The multilevel models estimated during the Bayesian regression will estimate intercepts for every combination of levels of these variables and weight them according to the sample size and variance present at each level. This allows smaller, less well represented levels of the data to contribute to the overall model fit without exhaggerating their importance.
+:::
+
+---
+
+You then need to make predictions using the previous model for each row of the poststratification frame. 
+
+<br>
+
+|state   |region |... |educ         |n      |$p(\text{dem.})$ |$p(\text{ind.})$ |$p(\text{rep.})$ |
+|:-------|:------|:---|:------------|:------|:-----|:-----|:-----|
+|Alabama |South  |... |No HS        |26344  |0.032 |0.329 |0.639 |
+|Alabama |South  |... |HS           |29100  |0.854 |0.094 |0.052 |
+|...     |...    |... |...          |...    |...   |...   |...   |
+|Wyoming |West   |... |Some College |120    |0.447 |0.102 |0.451 |
+|Wyoming |West   |... |HS           |271    |0.338 |0.221 |0.441 |
+
+---
+
+<br>
+
+<p align="center">
+**State-level Poststratification**
+</p>
+
+<br>
+
+$$
+\theta_s^{MRP} = \frac{\sum_{j \in s} N_j \theta_j}{\sum_{j \in s} N_j}
+$$
+
+<br>
+
+where $\theta$ is the predicted party identification, $s$ is the state, $N$ is the number of cells in the poststratification frame, and $j$ is each cell of the poststratification frame.
+
+## Validation
+
+The above procedure results in state-level estimates for each state are adjusted based on characteristics of each state and the proportion of different demographic combinations in them. 
+
+To test the accuracy of this model, I treated simple partisanship means taken from the Congressional Election Studies test set as the "truth".
+
+- Subtracted each state's predicted partisanship distribution from the distribution of partisanship derived from the test set.
+
+::: {.notes}
+- This procedure gives me a set of absolute errors in terms of how far each state's predicted partisanship was from their "actual" partisanship.
+- I used this procedure to the reduction in absolute error associated with different specifications of the predictive model.
+:::
 
 ## State-level Error Variance of Predictions by Model and Party
 
@@ -216,10 +302,16 @@ ggplot(model_perf_by_party, aes(x = party, y = abs_error, fill = party)) +
 
 4: Model 3 predictors + pct. Christian
 
-## ANES Data
+## Democratic Partisanship by state
 
-```{r anes, cache=TRUE}
-raw_data <- read_csv("anes.csv")
-```
+![](images/fig-dem-1.png)
+
+## Republican Partisanship by state
+
+![](images/fig-rep-1.png)
+
+## Independent Partisanship by state
+
+![](images/fig--1.png)
 
 ## References

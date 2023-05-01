@@ -10,6 +10,7 @@
   <meta name="generator" content="quarto-1.1.251">
 
   <meta name="author" content="Reed Merrill">
+  <meta name="dcterms.date" content="2023-05-01">
   <title>Estimating State-level Partisanship</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -345,6 +346,7 @@
 <section id="title-slide" class="center">
   <h1 class="title">Estimating State-level Partisanship</h1>
   <p class="author">Reed Merrill</p>
+  <p class="date">May 1, 2023</p>
 </section>
 
 <section id="introduction" class="slide level2">
@@ -364,7 +366,7 @@
 </section>
 <section id="motivation-and-problem" class="slide level2">
 <h2>Motivation and Problem</h2>
-<p>Many important political processes occur at the state level, but it is not usually straightforward to measure public opinion at this in sub-national units.</p>
+<p>Many important political processes occur at the state level, but it is not usually straightforward to measure public opinion at scales smaller than the national level.</p>
 <ul>
 <li>Public opinion data measured at the level of individual states is few and far between.</li>
 <li>Large public opinion surveys, such as the American National Election Study (ANES), are designed to be nationally representative, sometimes at the expense of state level representativeness.
@@ -385,13 +387,7 @@
 <h2>Project Objectives</h2>
 <p>Estimate partisanship (percentage of population per party) in each state for the last 35 years.</p>
 <ul>
-<li>Need to specify a model that performs well on the American National Election Studies (ANES) survey data.
-<ul>
-<li>current model underperforms at predicting Independent partisanship
-<ul>
-<li>mine the survey data for features that are predictive of this subset of partisans</li>
-</ul></li>
-</ul></li>
+<li>Need to specify a model that performs well on the American National Election Studies (ANES) survey data.</li>
 </ul>
 <!--
 ::: {.fragment}
@@ -424,32 +420,41 @@ ANES Data:
       }</style></aside>
 </section>
 <section id="multilevel-regression-and-poststratification" class="slide level2">
-<h2>Multilevel Regression and Poststratification</h2>
-<p>A technique used to improve the representativeness of survey data.</p>
+<h2>Multilevel Regression and Poststratification:</h2>
+<p>A technique used to improve the representativeness of unrepresentative survey data.</p>
 <p>Steps:</p>
 <ol type="1">
-<li>Multilevel Regression: Train a model that predicts the survey outcome you want improved estimates for. I use Bayesian multilevel multinomial regression.
+<li>Multilevel Regression: Train a model predicting the outcome on the survey data you want estimates for. I use Bayesian multilevel multinomial regression.
 <ol type="1">
-<li>Use predictors that are available in census data so that accurate estimates of the population proportions can be used later during weighting.</li>
+<li>Use predictors that are available in census data so that accurate estimates of the population proportions can be used during poststratification.</li>
 </ol></li>
-<li>Make predictions: Use the model from <strong>Step 1</strong> to make predictions on measurable characteristics from the populations of interest.</li>
+<li>Make predictions: Use the model from <strong>Step 1</strong> to make predictions on characteristics from the broader populations of interest – in my case, states.</li>
 <li>Poststratify: Weight the predictions according to how frequently individuals with the combinations of your measured characteristics occur in the populations of interest.</li>
 </ol>
 </section>
 <section id="predictors" class="slide level2">
 <h2>Predictors</h2>
-<p>Individual-level predictors: Age, Race, Sex, Education</p>
+<p><strong>Individual Level</strong></p>
+<p>These need to be available in census data so that geographic weighting using census data can later be used. They must also be categorical.</p>
+<p>Predictors:</p>
 <ul>
-<li>categorical variables</li>
+<li>Age (7 categories)</li>
+<li>Race (white, black, hispanic, other)</li>
+<li>Sex (male, female)</li>
+<li>Education (5 categories; No high school to Post-graduate Degree)</li>
 </ul>
-<p>The above demographic predictors can be supplemented to include sub-national units, like states, and other state-level predictors (<span class="citation" data-cites="gelmanChapter">Gelman (<a href="#/references" role="doc-biblioref" onclick="">n.d.</a>)</span>).</p>
-<p>State level predictors:</p>
+</section>
+<section id="predictors-1" class="slide level2">
+<h2>Predictors</h2>
+<p><strong>State-level</strong></p>
+<p>The individual-level predictors can be supplemented to include state-level predictors, because it is straighforward to account for variation in state-level predictors in the upcoming weighting step <span class="citation" data-cites="gelmanChapter">(see <a href="#/references" role="doc-biblioref" onclick="">Gelman n.d.</a>)</span>.</p>
+<p>Predictors:</p>
 <ul>
 <li>Republican vote share from the most recent election</li>
-<li>Region (Northeast, Midwest, South, West, East, Northwest)</li>
+<li>Region (Northeast, Midwest, West, South, North Central)</li>
 <li>racial composition (pct. black residents)</li>
-<li>religious composition (pct. Christian)</li>
 <li>urbanity (pct. urban population)</li>
+<li>religious composition (pct. Christian)</li>
 </ul>
 <aside class="notes">
 <ul>
@@ -470,27 +475,29 @@ ANES Data:
 <section id="poststratification" class="slide level2">
 <h2>Poststratification</h2>
 <ul>
-<li>Constructed using the 5-year version of the 2012 American Community Survey (ACS) via IPUMS USA.
+<li>Constructed using the 5-year version of the Census Bureau’s 2012 American Community Survey (ACS) via IPUMS USA.
 <ul>
-<li>Yearly demographic estimates of the population, based on 5 years of prior data.</li>
+<li>Yearly demographic estimates of the population, based on 5 years of prior data</li>
 </ul></li>
 </ul>
 <p><br></p>
 <p><strong>Example Poststratification Frame</strong></p>
-<div class="cell">
-<div class="cell-output-display">
-<table style="width:98%;">
+<table style="width:100%;">
 <colgroup>
-<col style="width: 23%">
+<col style="width: 12%">
+<col style="width: 10%">
 <col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 10%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">state</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">rep. vote</th>
 <th style="text-align: left;">eth</th>
 <th style="text-align: left;">male</th>
 <th style="text-align: left;">age</th>
@@ -501,6 +508,8 @@ ANES Data:
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Alabama</td>
+<td style="text-align: left;">South</td>
+<td style="text-align: left;">0.6055</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: left;">0</td>
 <td style="text-align: left;">18-29</td>
@@ -509,59 +518,49 @@ ANES Data:
 </tr>
 <tr class="even">
 <td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">18-29</td>
-<td style="text-align: left;">HS</td>
-<td style="text-align: left;">56392</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">18-29</td>
-<td style="text-align: left;">Some College</td>
-<td style="text-align: left;">108794</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">Hispanic</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">30-39</td>
-<td style="text-align: left;">HS</td>
-<td style="text-align: left;">954</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">Hispanic</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">70+</td>
-<td style="text-align: left;">Post-grad</td>
-<td style="text-align: left;">69</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Alabama</td>
+<td style="text-align: left;">South</td>
+<td style="text-align: left;">0.6055</td>
 <td style="text-align: left;">Black</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">50-59</td>
 <td style="text-align: left;">HS</td>
 <td style="text-align: left;">29100</td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wyoming</td>
+<td style="text-align: left;">West</td>
+<td style="text-align: left;">0.6819</td>
+<td style="text-align: left;">Black</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">30-39</td>
+<td style="text-align: left;">Some College</td>
+<td style="text-align: left;">120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Wyoming</td>
+<td style="text-align: left;">West</td>
+<td style="text-align: left;">0.6819</td>
+<td style="text-align: left;">Hispanic</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">70+</td>
+<td style="text-align: left;">HS</td>
+<td style="text-align: left;">271</td>
+</tr>
 </tbody>
 </table>
-</div>
-</div>
 <aside class="notes">
 <ul>
-<li>This is an simplified example of poststratification frame, extracteed from the 2012 frame that I constructed.</li>
+<li>This is part of poststratification frame, extracted from the 2012 frame that I constructed.</li>
 <li>Describe the table.</li>
 <li>Qickly explain the logic behind poststratification.</li>
 <li>Using models based on the previous multilevel regression equation, we can predict party identification at the individual level.</li>
@@ -580,9 +579,193 @@ ANES Data:
           display:block!important;
       }</style></aside>
 </section>
-<section id="state-level-error-variance-of-predictions-by-party-and-model" class="slide level2">
-<h2>State-level Error Variance of Predictions by Party and Model</h2>
-<div class="cell" data-hash="index_cache/revealjs/val data_459df516900fcc29189e246ff8a21987">
+<section id="model-training-and-validation-approach" class="slide level2">
+<h2>Model Training and Validation Approach</h2>
+<p>Model Training and Validation: Congressional Election Studies</p>
+<p>n = 54,535</p>
+<p>Simulate my use-case using this larger dataset.</p>
+<ul>
+<li>Training set: 10% of the full sample per state</li>
+<li>Test set: The remaining 90%</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Missing levels for county and state are present in the ANES data I will ultimately derive my estimates from.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="predictive-modeling" class="slide level2">
+<h2>Predictive Modeling</h2>
+<p>Model: Bayesian multilevel multinomial logit model</p>
+<ul>
+<li>Predictors: State, Age, Ethnicity, Gender, Education, and state-level predictors</li>
+<li>Random intercepts for all predictors except “male”</li>
+<li>Interactions: gender &amp; eth., educ. &amp; age, educ. &amp; eth.</li>
+</ul>
+<p><span class="math display">\[
+Pr(y_i = \text{dem, rep, ind}) = logit^{-1}[
+\alpha_{\rm s[i]}^{\rm state}
++ \alpha_{\rm a[i]}^{\rm age}
++ \alpha_{\rm r[i]}^{\rm eth}
++ \alpha_{\rm e[i]}^{\rm educ}
++ \beta^{\rm male} \cdot {\rm male}_{\rm i}
+\\ + \alpha_{\rm m[i], r[i]}^{\rm male.eth}
++ \alpha_{\rm e[i], a[i]}^{\rm educ.age}
++ \alpha_{\rm e[i], r[i]}^{\rm educ.eth}
+\text{(+ state-level predictors)}
+]
+\]</span></p>
+<p align="right">
+<span class="citation" data-cites="gelmanChapter">(see <a href="#/references" role="doc-biblioref" onclick="">Gelman n.d.</a>)</span>
+</p>
+<aside class="notes">
+<ul>
+<li>This model, due to its Bayesian approach, allows highly collinear variables and non-regularized models to be estimated. In a non-Bayesian linear or multilevel regression setting, this model would fail.</li>
+<li>The multilevel models estimated during the Bayesian regression will estimate intercepts for every combination of levels of these variables and weight them according to the sample size and variance present at each level. This allows smaller, less well represented levels of the data to contribute to the overall model fit without exhaggerating their importance.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2">
+
+<p>You then need to make predictions using the previous model for each row of the poststratification frame.</p>
+<p><br></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 22%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">state</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">…</th>
+<th style="text-align: left;">educ</th>
+<th style="text-align: left;">n</th>
+<th style="text-align: left;"><span class="math inline">\(p(\text{dem.})\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(p(\text{ind.})\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(p(\text{rep.})\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alabama</td>
+<td style="text-align: left;">South</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">No HS</td>
+<td style="text-align: left;">26344</td>
+<td style="text-align: left;">0.032</td>
+<td style="text-align: left;">0.329</td>
+<td style="text-align: left;">0.639</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alabama</td>
+<td style="text-align: left;">South</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">HS</td>
+<td style="text-align: left;">29100</td>
+<td style="text-align: left;">0.854</td>
+<td style="text-align: left;">0.094</td>
+<td style="text-align: left;">0.052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wyoming</td>
+<td style="text-align: left;">West</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">Some College</td>
+<td style="text-align: left;">120</td>
+<td style="text-align: left;">0.447</td>
+<td style="text-align: left;">0.102</td>
+<td style="text-align: left;">0.451</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Wyoming</td>
+<td style="text-align: left;">West</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">HS</td>
+<td style="text-align: left;">271</td>
+<td style="text-align: left;">0.338</td>
+<td style="text-align: left;">0.221</td>
+<td style="text-align: left;">0.441</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="slide level2">
+
+<p><br></p>
+<p align="center">
+<strong>State-level Poststratification</strong>
+</p>
+<p><br></p>
+<p><span class="math display">\[
+\theta_s^{MRP} = \frac{\sum_{j \in s} N_j \theta_j}{\sum_{j \in s} N_j}
+\]</span></p>
+<p><br></p>
+<p>where <span class="math inline">\(\theta\)</span> is the predicted party identification, <span class="math inline">\(s\)</span> is the state, <span class="math inline">\(N\)</span> is the number of cells in the poststratification frame, and <span class="math inline">\(j\)</span> is each cell of the poststratification frame.</p>
+</section>
+<section id="validation" class="slide level2">
+<h2>Validation</h2>
+<p>The above procedure results in state-level estimates for each state are adjusted based on characteristics of each state and the proportion of different demographic combinations in them.</p>
+<p>To test the accuracy of this model, I treated simple partisanship means taken from the Congressional Election Studies test set as the “truth”.</p>
+<ul>
+<li>Subtracted each state’s predicted partisanship distribution from the distribution of partisanship derived from the test set.</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>This procedure gives me a set of absolute errors in terms of how far each state’s predicted partisanship was from their “actual” partisanship.</li>
+<li>I used this procedure to the reduction in absolute error associated with different specifications of the predictive model.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="state-level-error-variance-of-predictions-by-model-and-party" class="slide level2">
+<h2>State-level Error Variance of Predictions by Model and Party</h2>
+<div class="cell" data-hash="index_cache/revealjs/val data_5164b47db797edeb8dfd4b9338ab91c4">
 
 </div>
 
@@ -591,12 +774,18 @@ ANES Data:
 <p>3: Model 2 predicots + pct. Black, pct. Urban</p>
 <p>4: Model 3 predictors + pct. Christian</p>
 </section>
-<section id="anes-data" class="slide level2">
-<h2>ANES Data</h2>
-<div class="cell" data-hash="index_cache/revealjs/anes_71e2d32e47bf9819ac7608a18702cf8f">
+<section id="democratic-partisanship-by-state" class="slide level2">
+<h2>Democratic Partisanship by state</h2>
 
-</div>
-</section>
+<img data-src="images/fig-dem-1.png" class="r-stretch"></section>
+<section id="republican-partisanship-by-state" class="slide level2">
+<h2>Republican Partisanship by state</h2>
+
+<img data-src="images/fig-rep-1.png" class="r-stretch"></section>
+<section id="independent-partisanship-by-state" class="slide level2">
+<h2>Independent Partisanship by state</h2>
+
+<img data-src="images/fig--1.png" class="r-stretch"></section>
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>
 
