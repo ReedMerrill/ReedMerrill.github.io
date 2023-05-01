@@ -312,6 +312,6 @@ ggplot(model_perf_by_party, aes(x = party, y = abs_error, fill = party)) +
 
 ## Independent Partisanship by state
 
-![](images/fig--1.png)
+![](images/fig-ind-1.png)
 
 ## References
